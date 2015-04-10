@@ -1,0 +1,105 @@
+# depslib dependency file v1.0
+1427234936 source:/home/micha/Documents/codeblocks/Chapter 10/main.cpp
+	<iostream>
+	<math.h>
+
+1427925922 source:/home/micha/documents/codeblocks/Chapter 10/main.cpp
+	<iostream>
+	<math.h>
+	"Point.h"
+	"Creature.h"
+	<unistd.h>
+	<termios.h>
+	<stdio.h>
+
+1427831417 /home/micha/documents/codeblocks/Chapter 10/Chapter10.h
+	<iostream>
+
+1427925988 /home/micha/documents/codeblocks/Chapter 10/Point.h
+	<iostream>
+	<vector>
+
+1427836823 /home/micha/documents/codeblocks/Chapter 10/Creature.h
+	<iostream>
+	<string>
+	"Point.h"
+
+1427976526 source:/home/reichmann/Dropbox/Master Thesis/cpp Tutorial/Chapter 10/Matrix.cpp
+	"Point.h"
+
+1427976525 /home/reichmann/Dropbox/Master Thesis/cpp Tutorial/Chapter 10/Point.h
+	<iostream>
+	<vector>
+
+1427976551 source:/home/reichmann/Dropbox/Master Thesis/cpp Tutorial/Chapter 10/main.cpp
+	<iostream>
+	<math.h>
+	"Point.h"
+	"Creature.h"
+	<unistd.h>
+	<termios.h>
+	<stdio.h>
+	"Matrix.cpp"
+
+1427926113 /home/reichmann/Dropbox/Master Thesis/cpp Tutorial/Chapter 10/Creature.h
+	<iostream>
+	<string>
+	"Point.h"
+
+1427976526 /home/reichmann/Dropbox/Master Thesis/cpp Tutorial/Chapter 10/Matrix.cpp
+	"Point.h"
+
+1428612086 source:/home/micha/Dropbox/Master Thesis/cpp Tutorial/Chapter 10/main.cpp
+	"Point.h"
+	"Creature.h"
+	"Inventory.h"
+	"Matrix.cpp"
+	"Setup.h"
+
+1428608831 /home/micha/Dropbox/Master Thesis/cpp Tutorial/Chapter 10/Point.h
+	<iostream>
+	<vector>
+
+1428611412 /home/micha/Dropbox/Master Thesis/cpp Tutorial/Chapter 10/Creature.h
+	<iostream>
+	<string>
+	"Point.h"
+	"Inventory.h"
+	"Setup.h"
+	<unistd.h>
+	<stdio.h>
+
+1428612787 /home/micha/Dropbox/Master Thesis/cpp Tutorial/Chapter 10/Matrix.cpp
+	"Point.h"
+	<cstdlib>
+	<ctime>
+	<sstream>
+	<vector>
+	<unistd.h>
+
+1428612787 source:/home/micha/Dropbox/Master Thesis/cpp Tutorial/Chapter 10/Matrix.cpp
+	"Point.h"
+	<cstdlib>
+	<ctime>
+	<sstream>
+	<vector>
+	<unistd.h>
+
+1428601419 source:/home/micha/Dropbox/Master Thesis/cpp Tutorial/Chapter 10/Creature.cpp
+	"Creature.h"
+	"Matrix.cpp"
+
+1428334205 /home/micha/Dropbox/Master Thesis/cpp Tutorial/Chapter 10/Inventory.h
+	<iostream>
+	<vector>
+
+1428614344 /home/micha/Dropbox/Master Thesis/cpp Tutorial/Chapter 10/Setup.h
+	<unistd.h>
+	<termios.h>
+	<iostream>
+	<string>
+	<stdio.h>
+	<sstream>
+	<cstdlib>
+	"Point.h"
+
