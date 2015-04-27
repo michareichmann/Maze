@@ -15,7 +15,9 @@ using namespace std;
     durability of items
     larger empty map
     fix/improve random Room
-    implement size dependend length of the random paths*/
+    implement size dependend length of the random paths
+    crossplatform compile
+*/
 
 
 int main()
@@ -43,8 +45,7 @@ int main()
     /**setup the labyrinth*/
 
     narate(enterDifficulty(),2) ;
-    nDifficulty = tellDifficulty();
-    Matrix<char> maze(nDifficulty); maze.randomMaze();
+    Matrix<char> maze(tellDifficulty()); maze.randomMaze();
     Matrix<char> emptyMaze(5,5,true);
     Point farthest = maze.farthestPoint();
     uint16_t winx = farthest.x(), winy = farthest.y();
