@@ -34,6 +34,7 @@ int main()
 
     /**setup your creature*/
 
+    system("clear");
     narate(welcome,8);
     narate(proceed,0.01); c = getcha(); system("clear");
     narate(enterName,2);

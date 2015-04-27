@@ -1,0 +1,2 @@
+#sh script to compile maze
+g++ ../main.cpp ../Creature.cpp ../Matrix.cpp -o Maze.exe
