@@ -18,7 +18,7 @@
 
 inline void narate(const string &story, unsigned int speed){
     speed *=10000;
-    for (ushort i(0); i<story.size();i++ ){
+    for (uint16_t i(0); i<story.size();i++ ){
         if ((story[i-1] == '.' ||story[i-1] == '!' ||story[i-1] == '?')&& i>1 && i<story.size()-2 ) sleep(1);
         cout << story[i];
         cout.flush();
@@ -26,12 +26,12 @@ inline void narate(const string &story, unsigned int speed){
     }
 
 }
-inline void secondsLeft(ushort seconds){
+inline void secondsLeft(uint16_t seconds){
     unsigned int time = 1000000/4;
-    for (ushort i=seconds; i<100; i--){
+    for (uint16_t i=seconds; i<100; i--){
         cout << i << " "; cout.flush();
         if (i==0) break;
-        for (ushort i(0); i<3;i++){
+        for (uint16_t i(0); i<3;i++){
             usleep(time);
             cout << "."; cout.flush();
         }
@@ -83,8 +83,6 @@ static char c;                  /**placeholder*/
 static string sName;            /**Name of the creature*/
 
 static char cDifficulty;        /**responsible for the size of the maze*/
-static ushort nDifficulty;
-
 
 static string welcome = "Greetings! Welcome to MAZE!\n\n";
 
@@ -98,9 +96,10 @@ inline string explainKeys(){
     explainKeys << "d:\t move right\n";
     explainKeys << "p:\t position\t\t";
     explainKeys << "i:\t inventory\n";
-    explainKeys << "m:\t shows the map for 3 seconds\t";
+    explainKeys << "m:\t map\t\t\t";
     explainKeys << "b:\t crush a wall\n";
-    explainKeys << "h:\t show this menu\t\t";
+    explainKeys << "h:\t menu\t\t\t";
+    explainKeys << "t:\t locate treasure\n";
     explainKeys << "-:\t end game\n\n";
     return explainKeys.str();
 }
@@ -118,7 +117,7 @@ inline string enterDifficulty(){
     return diff.str();
 }
 
-inline ushort tellDifficulty(){
+inline uint16_t tellDifficulty(){
      while (true){
         cDifficulty = getcha();
         if      (cDifficulty == '0') {narate("\nYou are such a scaredy cat! You chose very easy!",5); break;}
@@ -131,7 +130,7 @@ inline ushort tellDifficulty(){
     return int(cDifficulty-'0');
 }
 
-static string intro = "You reached a pitch black maze and want to find the treasure hidden at the 'x'! Go on and try your luck!\n\n";
+static string intro = "You reached a pitch black maze and want to find the hidden treasure! Go on and try your luck!\n\n";
 
 static string inventory = "You begin with:\n\n";
 

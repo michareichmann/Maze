@@ -1,6 +1,6 @@
 #ignore binaries, objects and codeblocks files
-bin/*
-obj/*
+bin/
+obj/
 Maze.cbp
 Maze.layout
 Maze.depend

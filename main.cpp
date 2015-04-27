@@ -22,41 +22,39 @@ int main()
 {
     /**DEBUGMODE*/
 
-    Creature creature("Micha", Point(1,1), Inventory()); creature.createInventory();
-    Matrix<char> maze(10,10); maze.randomMaze();
-    Matrix<char> emptyMaze(5,5,true);
-    Point farthest = maze.farthestPoint(); uint8_t winx = farthest.x(), winy = farthest.y();
-    cout << maze; c=getcha();
-    string dir("00");
+//    Creature creature("Micha", Point(1,1), Inventory()); creature.createInventory();
+//    Matrix<char> maze(10,10); maze.randomMaze();
+//    Matrix<char> emptyMaze(5,5,true);
+//    Point farthest = maze.farthestPoint(); uint16_t winx = farthest.x(), winy = farthest.y();
+//    string dir("00");
 
     /**GAMEMODE*/
 
-//    /**setup your creature*/
-//
-//    narate(welcome,8);
-//    narate(proceed,0.01); c = getcha(); system("clear");
-//    narate(enterName,2);
-//    cin >> sName; system("clear");
-//    Creature creature(sName, Point(1,1), Inventory());
-//    creature.createInventory();
-//
-//
-//    /**setup the labyrinth*/
-//
-//    narate(enterDifficulty(),2) ;
-//    nDifficulty = tellDifficulty();
-//    Matrix<char> maze(nDifficulty); maze.randomMaze();
-//    Matrix<char> emptyMaze(nDifficulty); emptyMaze.clearLines();
-////    Matrix<char> mapMaze(nDifficulty);
-//    Point farthest = maze.farthestPoint(); ushort winx = farthest.x(), winy = farthest.y();
-//    emptyMaze.set(winx,winy,'x');
-//    string dir("00");
-//    narate(intro,3); c = getcha();
-//    narate(goOn,3);
-//    startGame(); system("clear");
-//    narate(inventory,3);
-//    creature.printInventory(); c = getcha(); system("clear");
-//    narate(help,3);c = getcha(); system("clear");
+    /**setup your creature*/
+
+    narate(welcome,8);
+    narate(proceed,0.01); c = getcha(); system("clear");
+    narate(enterName,2);
+    cin >> sName; system("clear");
+    Creature creature(sName, Point(1,1), Inventory());
+    creature.createInventory();
+
+
+    /**setup the labyrinth*/
+
+    narate(enterDifficulty(),2) ;
+    nDifficulty = tellDifficulty();
+    Matrix<char> maze(nDifficulty); maze.randomMaze();
+    Matrix<char> emptyMaze(5,5,true);
+    Point farthest = maze.farthestPoint();
+    uint16_t winx = farthest.x(), winy = farthest.y();
+    string dir("00");
+    narate(intro,3); c = getcha();
+    narate(goOn,3);
+    startGame(); system("clear");
+    narate(inventory,3);
+    creature.printInventory(); c = getcha(); system("clear");
+    narate(help,3);c = getcha(); system("clear");
 
     /**GAMECODE*/
 
@@ -65,8 +63,8 @@ int main()
 
     while (true)
     {
-        uint8_t x = creature.x();
-        uint8_t y = creature.y();
+        uint16_t x = creature.x();
+        uint16_t y = creature.y();
 
         /**visualization of the maze*/
         if (!jump) {
@@ -115,7 +113,7 @@ int main()
 //maze.printMatrix();
 //Matrix<char> blub(9,9);
 //blub.clearLines();
-//ushort col = 8, row = 8;
+//uint16_t col = 8, row = 8;
 //blub.pov(col, row, maze);
 //
 //cout << maze << endl;

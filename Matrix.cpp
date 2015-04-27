@@ -13,7 +13,7 @@ using namespace std;
 /**constructors*/
 
 template<typename T>
-void Matrix<T>::construct(uint8_t & nRows, uint8_t & nCols){
+void Matrix<T>::construct(uint16_t & nRows, uint16_t & nCols){
 
     nCols = 4*nCols + 1;
     nRows = 2*nRows + 1;
@@ -33,10 +33,10 @@ void Matrix<T>::construct(uint8_t & nRows, uint8_t & nCols){
 }
 
 template<typename T>
-Matrix<T>::Matrix(ushort difficulty) {
+Matrix<T>::Matrix(uint16_t difficulty) {
 
     srand(time(0));
-    ushort nRows, nCols, nPairs;
+    uint16_t nRows, nCols, nPairs;
     vector<nPair> num;
     if (difficulty == 0)        num = difficultyNumbers(25,40);
     else if (difficulty == 1)   num = difficultyNumbers(50,70);
@@ -47,15 +47,15 @@ Matrix<T>::Matrix(ushort difficulty) {
     nRows = num[nPairs].first;
     nCols = num[nPairs].second;
 
-    construct(nRows, nCols, false);
+    construct(nRows, nCols);
 
 }
 
 //template<typename T>
-//Matrix<T>::Matrix(uint8_t nSize, bool bConstruct, bool bConstr){
+//Matrix<T>::Matrix(uint16_t nSize, bool bConstruct, bool bConstr){
 //
-//    uint8_t nRows = 2*nSize + 1;
-//    uint8_t nCols = 4*nSize + 1;
+//    uint16_t nRows = 2*nSize + 1;
+//    uint16_t nCols = 4*nSize + 1;
 //    _mat.resize(nRows);
 //    for (unsigned i(0); i<nRows; i++) {
 //        _mat[i].resize(nCols);
@@ -79,11 +79,11 @@ T & Matrix<T>::operator()(const unsigned& row, const unsigned& col){
 template<typename T>
 void Matrix<T>::randomRoom(){
     srand(time(0));
-    ushort maxRow = (_rows-1)/2;
-    ushort maxCol = (_cols-1)/4;
-    for (ushort row(1); row<=maxRow; row++)
+    uint16_t maxRow = (_rows-1)/2;
+    uint16_t maxCol = (_cols-1)/4;
+    for (uint16_t row(1); row<=maxRow; row++)
     {
-        for (ushort col(1); col<=maxCol; col++)
+        for (uint16_t col(1); col<=maxCol; col++)
         {
             char dir = createRandomDir();
             if      (row == 1 && col == 1)           {while (true) { dir = createRandomDir(); if (dir == 's' || dir == 'a') continue;else { deleteLine(col, row, dir); break;}}}
@@ -112,15 +112,15 @@ void Matrix<T>::randomMaze(){
     /**create first random path through the maze*/
     randomSeedPath(buf);
 
-    ushort start, randPos;
-    for (ushort nPaths(0); nPaths < 60; nPaths++){
+    uint16_t start, randPos;
+    for (uint16_t nPaths(0); nPaths < 60; nPaths++){
 
         /**instatiate new random new starting position of old path*/
         start = buf.size();
         randPos = rand() % (start-2) +1;
 
         buf.resize(start+1); buf[start].resize(3);
-        for (ushort i(0); i<3;i++)
+        for (uint16_t i(0); i<3;i++)
             buf[start][i] = buf[randPos][i];
 
         /** for printing the randomly chosen seed*/
@@ -207,11 +207,11 @@ void Matrix<T>::randomSeedPath(vector<vector<uint16_t> > & buf){
 template<typename T>
 Point Matrix<T>::farthestPoint(){
 
-    ushort maxRow = (_rows-1)/2, maxCol = (_cols-1)/4;
+    uint16_t maxRow = (_rows-1)/2, maxCol = (_cols-1)/4;
 
-    ushort pathLength, row, col, lastdir(0), lastway, nWays(0), index(1),it(0);
-    vector<vector<ushort> > buf;
-    vector<vector<ushort> > endPoints;
+    uint16_t pathLength, row, col, lastdir(0), lastway, nWays(0), index(1),it(0);
+    vector<vector<uint16_t> > buf;
+    vector<vector<uint16_t> > endPoints;
     buf.resize(1); buf[0].resize(6,1); buf[0][2]=0; buf[0][3]=5; buf[0][4]=2; /**first one*/
 
 while (it<30) {
@@ -219,18 +219,18 @@ while (it<30) {
     row = buf[it][0]; col = buf[it][1];lastdir = buf[it][3]; lastway = buf[it][4]; pathLength = buf[it][2];
 //    cout << "coods " << row << " " << col << " lastway " << lastway <<" lastdir " << lastdir <<endl;
 
-    for (ushort i(0); i<(maxRow*maxCol); i++){
+    for (uint16_t i(0); i<(maxRow*maxCol); i++){
 
         /**save the crossings*/
         nWays = 0;
-        if(i==0)    {for (ushort j(0); j<4; j++) if (!checkWall(col, row, IntChar(j)) && j!=(lastdir) && j!=lastway) nWays++;}
-        else        {for (ushort j(0); j<4; j++) if (!checkWall(col, row, IntChar(j)) && j!=(lastdir+2)%4) nWays++;}
+        if(i==0)    {for (uint16_t j(0); j<4; j++) if (!checkWall(col, row, IntChar(j)) && j!=(lastdir) && j!=lastway) nWays++;}
+        else        {for (uint16_t j(0); j<4; j++) if (!checkWall(col, row, IntChar(j)) && j!=(lastdir+2)%4) nWays++;}
 //        cout << i << " " << nWays << " -> " << row << " " << col <<" " << lastdir <<endl;
         if (nWays == 3) cout << "rare Exception\n";
         if (nWays>=2) {
             buf.resize(index+1);
             buf[index].push_back(row); buf[index].push_back(col); buf[index].push_back(pathLength); buf[index].push_back((lastdir+2)%4);
-            for (ushort j(0); j<4; j++) {if (!checkWall(col, row, IntChar(j))&& j!=(lastdir+2)%4) buf[index].push_back(j);}
+            for (uint16_t j(0); j<4; j++) {if (!checkWall(col, row, IntChar(j))&& j!=(lastdir+2)%4) buf[index].push_back(j);}
             index++;
         }
         /**stop the loop to start*/
@@ -265,17 +265,17 @@ while (it<30) {
 }/**end of while loop*/
 
     /** find the endpoint with the longest path and print an 'x' there*/
-    ushort x(0);
-    for (ushort i(1);i<endPoints.size();i++){
+    uint16_t x(0);
+    for (uint16_t i(1);i<endPoints.size();i++){
         if (endPoints[i][2] > endPoints[x][2]) x=i;
     }
     row = endPoints[x][0]; col = endPoints[x][1];
     Point farthest(col,row);
     col = (col -1)*4 +2; row = _rows - ((row-1)*2 + 2) ;
-    _mat[row][col] = 'x';
+    //_mat[row][col] = 'x';   //for printing an x at the endpoint
 
     /** print all the endpoints and length of the path to get there*/
-//    for (ushort i(0);i<endPoints.size();i++){
+//    for (uint16_t i(0);i<endPoints.size();i++){
 //        for (int j(0); j<3;j++)
 //            cout << endPoints[i][j] << " ";
 //        cout << endl;
@@ -285,15 +285,15 @@ while (it<30) {
 }
 
 template<typename T>
-void Matrix<T>::pov(uint8_t & col, uint8_t & row, Matrix<char> & maze){
-    ushort mcol = col, mrow = row, it;
+void Matrix<T>::pov(uint16_t & col, uint16_t & row, Matrix<char> & maze){
+    uint16_t mcol = col, mrow = row, it;
     char cDir;
-    uint8_t devRow(3), devCol(3); /** position in the center view*/
+    uint16_t devRow(3), devCol(3); /** position in the center view*/
 
-        for (ushort dir2(0); dir2 < 4; dir2++){
+        for (uint16_t dir2(0); dir2 < 4; dir2++){
         it = 0;
 jump:
-            for (ushort dir1(0); dir1 < 4; dir1++){
+            for (uint16_t dir1(0); dir1 < 4; dir1++){
                 cDir = IntChar(dir1);
                 if (maze.checkWall(col, row, cDir)) buildLine(devCol, devRow, cDir);
             }
@@ -346,8 +346,8 @@ void Matrix<T>::reset(){
 template<typename T>
 void Matrix<T>::clearLines(){
 
-    for (ushort row(0); row < _rows; row++) {
-        for (ushort col(1); col < _cols -1; col++) {
+    for (uint16_t row(0); row < _rows; row++) {
+        for (uint16_t col(1); col < _cols -1; col++) {
             if (col % 4 == 0)               _mat[row][col] = ' ';
             if (row == 0 || row == _rows-1) _mat[row][col] = '_';
             else if (row % 2 == 0)          _mat[row][col] = ' ';
@@ -358,8 +358,8 @@ void Matrix<T>::clearLines(){
 template<typename T>
 void Matrix<T>::clearAllLines(){
 
-     for (ushort row(0); row < _rows; row++) {
-        for (ushort col(0); col < _cols; col++) {
+     for (uint16_t row(0); row < _rows; row++) {
+        for (uint16_t col(0); col < _cols; col++) {
             if (col % 4 == 0) _mat[row][col] = ' ';
             if (row % 2 == 0) _mat[row][col] = ' ';
         }
@@ -369,8 +369,8 @@ void Matrix<T>::clearAllLines(){
 template<typename T>
 void Matrix<T>::clearAll(){
 
-    for (ushort row(0); row < _rows; row++) {
-        for (ushort col(0); col < _cols; col++) {
+    for (uint16_t row(0); row < _rows; row++) {
+        for (uint16_t col(0); col < _cols; col++) {
             _mat[row][col] = ' ';
         }
     }
@@ -401,7 +401,7 @@ void Matrix<T>::deleteLine(unsigned col, unsigned row, char dir){
 }
 
 template<typename T>
-void Matrix<T>::buildLine(ushort col, ushort row, char dir){
+void Matrix<T>::buildLine(uint16_t col, uint16_t row, char dir){
     col = (col -1)*4 +2;
     row = _rows - ((row-1)*2 + 2);
     if (dir == 'w')         _mat[row-1][col-1] = _mat[row-1][col] = _mat[row-1][col+1] = '_';
@@ -412,17 +412,17 @@ void Matrix<T>::buildLine(ushort col, ushort row, char dir){
 
 template<typename T>
 void Matrix<T>::printMatrix(){
-    for (ushort i(0); i<_rows; i++)
+    for (uint16_t i(0); i<_rows; i++)
         {
             cout << "\t\t\t";
-            for (ushort j(0); j<_cols; j++)
+            for (uint16_t j(0); j<_cols; j++)
                 cout << _mat[i][j];
             cout << "\n";
         }
 }
 
 template<typename T>
-void Matrix<T>::showMaze(uint8_t & col, uint8_t & row, char & dir, Matrix<char> & maze){
+void Matrix<T>::showMaze(uint16_t & col, uint16_t & row, char & dir, Matrix<char> & maze){
 
     pov(col,row,maze);
     set(3, 3, dir);
@@ -444,9 +444,9 @@ char Matrix<T>::createRandomDir(){
 
 template<typename T>
 char Matrix<T>::createRandomDir(const char & notDir){
-    ushort x = rand() % 3;
-    ushort sNotDir = CharInt(notDir);
-    ushort dir;
+    uint16_t x = rand() % 3;
+    uint16_t sNotDir = CharInt(notDir);
+    uint16_t dir;
     if (notDir=='5') dir=CharInt(createRandomDir());
     else {
         x==0 ? dir = (sNotDir+1)%4 : (x==1 ? dir = (sNotDir+2)%4 : dir = (sNotDir+3)%4);
@@ -457,10 +457,10 @@ char Matrix<T>::createRandomDir(const char & notDir){
 
 template<typename T>
 char Matrix<T>::createRandomDir(const char & notDir1, const char & notDir2){
-    ushort x = rand() % 2;
-    ushort sNotDir1 = CharInt(notDir1), sNotDir2  = CharInt(notDir2);
-    ushort dir;
-    ushort largerDir = ((sNotDir1+1)%4==sNotDir2 ? sNotDir2 : sNotDir1);
+    uint16_t x = rand() % 2;
+    uint16_t sNotDir1 = CharInt(notDir1), sNotDir2  = CharInt(notDir2);
+    uint16_t dir;
+    uint16_t largerDir = ((sNotDir1+1)%4==sNotDir2 ? sNotDir2 : sNotDir1);
     if (notDir2=='5')                        {dir = CharInt(createRandomDir(notDir1));}
     else {
         if      (sNotDir1 == (sNotDir2+2)%4) {x==0 ? dir=(sNotDir1+1)%4 : dir=(sNotDir1+3)%4;}
@@ -474,8 +474,8 @@ char Matrix<T>::createRandomDir(const char & notDir1, const char & notDir2){
 
 template<typename T>
 char Matrix<T>::createRandomDir(const char & notDir1, const char & notDir2, const char & notDir3){
-    ushort s1 = CharInt(notDir1), s2 = CharInt(notDir2), s3  = CharInt(notDir3);
-    ushort dir;
+    uint16_t s1 = CharInt(notDir1), s2 = CharInt(notDir2), s3  = CharInt(notDir3);
+    uint16_t dir;
     if (notDir3=='5')   {dir = CharInt(createRandomDir(notDir1,notDir2));}
     else                dir = 6-s1-s2-s3;
     char cdir = IntChar(dir);
@@ -483,7 +483,7 @@ char Matrix<T>::createRandomDir(const char & notDir1, const char & notDir2, cons
 }
 
 template<typename T>
-char Matrix<T>::createRandomPathDir(const ushort & row, const ushort & col, const ushort & maxRow, const ushort & maxCol, const char & cLastdir) {
+char Matrix<T>::createRandomPathDir(const uint16_t & row, const uint16_t & col, const uint16_t & maxRow, const uint16_t & maxCol, const char & cLastdir) {
 
     char dir;
 
@@ -508,11 +508,11 @@ uint16_t Matrix<T>::getRandom(uint16_t nMin, uint16_t nMax){
 }
 
 template<typename T>
-vector<nPair> Matrix<T>::difficultyNumbers(ushort nMinProduct, ushort nMaxProduct){
+vector<nPair> Matrix<T>::difficultyNumbers(uint16_t nMinProduct, uint16_t nMaxProduct){
     vector<nPair> num;
-    ushort it(1);
-            for (ushort i(4); i<17; i++){
-                for (ushort j(5); j<17; j++){
+    uint16_t it(1);
+            for (uint16_t i(4); i<17; i++){
+                for (uint16_t j(5); j<17; j++){
                     if (i*j>=nMinProduct && i*j <nMaxProduct) {
                     num.resize(it);
                     num[it-1].first = i; num[it-1].second = j;
@@ -527,7 +527,7 @@ vector<nPair> Matrix<T>::difficultyNumbers(ushort nMinProduct, ushort nMaxProduc
 /**checker functions */
 
 template<typename T>
-bool Matrix<T>::checkWall(ushort col,ushort row, char dir){
+bool Matrix<T>::checkWall(uint16_t col,uint16_t row, char dir){
     bool checkWall(false);
     col = (col -1)*4 +2;
     row = _rows - ((row-1)*2 + 2);
@@ -539,11 +539,11 @@ bool Matrix<T>::checkWall(ushort col,ushort row, char dir){
 }
 
 template<typename T>
-bool Matrix<T>::checkOuterWall(ushort col,ushort row, char dir){
+bool Matrix<T>::checkOuterWall(uint16_t col,uint16_t row, char dir){
 
 
-    ushort maxRow = (_rows-1)/2;
-    ushort maxCol = (_cols-1)/4;
+    uint16_t maxRow = (_rows-1)/2;
+    uint16_t maxCol = (_cols-1)/4;
     bool checkOuterWall(false);
     if ((row==1 && dir=='s') || (row==maxRow && dir=='w') || (col==1 && dir=='a') || (col==maxCol && dir=='d'))
         {
@@ -569,7 +569,7 @@ bool Matrix<T>::checkNextField(uint16_t row, uint16_t col, const vector<vector<u
 /**converters*/
 
 template<typename T>
-ushort Matrix<T>::cDir(char & dir, bool col){
+uint16_t Matrix<T>::cDir(char & dir, bool col){
 
     uint16_t num, nDir = CharInt(dir);
     if (!col)    num = (-nDir+1)%2;

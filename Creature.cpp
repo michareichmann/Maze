@@ -3,7 +3,7 @@
 
 using namespace std;
 
-void Creature::moveTo(cushort & col, cushort & row, const char & dir, Matrix<char> & maze) {
+void Creature::moveTo(const uint16_t & col, const uint16_t & row, const char & dir, Matrix<char> & maze) {
 
     if (!maze.checkWall(col, row, dir)) {
         if      (dir == 'w') { m_Location.Set(col, row+1); }
@@ -13,7 +13,7 @@ void Creature::moveTo(cushort & col, cushort & row, const char & dir, Matrix<cha
     }
 }
 
-void Creature::lookMap(Matrix<char> & maze, Matrix<char> & emptyMaze, uint8_t & col, uint8_t & row, char & dir){
+void Creature::lookMap(Matrix<char> & maze, Matrix<char> & emptyMaze, uint16_t & col, uint16_t & row, char & dir){
 
     system("clear");
     if (!_inventory.count("Match")) narate("You got no matches!\n",2);
@@ -26,7 +26,7 @@ void Creature::lookMap(Matrix<char> & maze, Matrix<char> & emptyMaze, uint8_t & 
 }
 
 
-void Creature::breakWall(Matrix<char> & emptyMaze, Matrix<char> & maze, uint8_t & col, uint8_t & row, char & dir){
+void Creature::breakWall(Matrix<char> & emptyMaze, Matrix<char> & maze, uint16_t & col, uint16_t & row, char & dir){
 
     if (!_inventory.count("Sledgehammer")) cout << "You're out of Sledgehammers!\n";
     else if (maze.checkOuterWall(col,row,dir)) cout << "You can't break an outer Wall\n";
@@ -46,13 +46,13 @@ void Creature::createInventory(){
 
 _inventory.addItem("Sledgehammer",2);
 _inventory.addItem("Match",2);
-_inventory.addItem("Map\t",1);
+_inventory.addItem("Map",1);
 _inventory.addItem("Mole",5);
 _inventory.addItem("Shovel",3);
 
 }
 
-void Creature::locateTreasure(Point & farthest, uint8_t & col, uint8_t & row){
+void Creature::locateTreasure(Point & farthest, uint16_t & col, uint16_t & row){
 
     /**check inventory*/
     if (!_inventory.count("Mole")) narate("You're out of Sledgehammers!\n",2);
@@ -76,7 +76,7 @@ void Creature::locateTreasure(Point & farthest, uint8_t & col, uint8_t & row){
 
     string direction[7] = {"northeastward", "northward", "northwestward", "westward", "southwestward", "southward", "southeastward"};
     if (angle < 22.5 || angle >337.5)   narate("The treasure ist east of you!\n",2);
-    for (uint8_t i(0); i < 7; i++)
+    for (uint16_t i(0); i < 7; i++)
         if (angle > 22.5+45*i && angle < 67.5+i*45)  {narate("The treasure is ",2); narate(direction[i],2); cout << "!\n";sleep(1);}
 
     /** decrease item */
