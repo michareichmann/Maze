@@ -42,7 +42,13 @@ public:
     string name(ushort index)   {return _inventory[index].name();}
     ushort count(ushort index)  {return _inventory[index].count();}
     ushort size()               {return _nItems;}
-    ushort count(string sItemName) {for (ushort i(0); i<_nItems; i++){ if (_inventory[i].name()==sItemName) {return _inventory[i].count(); break;}}}
+    ushort count(string sItemName) {
+        ushort countItem;
+        for (ushort i(0); i<_nItems; i++) {
+            if (_inventory[i].name()==sItemName) {countItem = _inventory[i].count(); break;}
+        }
+        return countItem;
+    }
 
 
     /**setters*/

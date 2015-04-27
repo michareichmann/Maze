@@ -3,14 +3,15 @@
 
 #include <iostream>
 #include <vector>
+#include <stdint.h>
 
 using namespace std;
 typedef unsigned short ushort;
 typedef const unsigned short cushort;
 typedef pair<ushort,ushort> nPair;
 
-class Point
-{
+class Point {
+
 private:
     double m_dX, m_dY, m_dZ;
 
@@ -55,30 +56,38 @@ private:
 
 public:
     /**constructors*/
-    void construct(ushort nRows, ushort nCols);
-    Matrix(unsigned rows, unsigned cols) {construct(rows, cols);}
+    Matrix() {};
+    void construct(uint8_t & nRows, uint8_t & nCols);
+    Matrix(uint8_t rows = 0, uint8_t cols = 0, bool bEmpty = false) {construct(rows, cols); if (bEmpty) clearAll();}
     Matrix(ushort difficulty);
-    Matrix(const Matrix<T>& rhs);
-    //virtual ~Matrix();
+    //Matrix(uint8_t nSize, bool bConstruct, bool bConstr);
 
     /**Access functions*/
     T & operator()(const unsigned& row, const unsigned& col);
     unsigned rows() const {return this->_rows;}
     unsigned cols() const {return this->_cols;}
 
-    /**setter functions*/
-    void set(unsigned row, unsigned col, char sign);
-    void clearLines();
-    void fillLines();
-    void deleteLine(unsigned row, unsigned col, char dir);
-    void randomRoom();
-    void randomMaze();
-    void randomSeedPath(vector<vector<ushort> > & buf);
-    Point farthestPoint();
+    /**matrix operations*/
+    void set(unsigned row, unsigned col, char sign);                        /** sets a specific sign into a single box*/
+    void reset(unsigned row, unsigned col);                                 /** clears a sign in a single box*/
+    void reset();                                                           /** clears the signs of all boxes*/
+    void clearLines();                                                      /** clears all the inner lines*/
+    void clearAllLines();                                                   /** clears all lines */
+    void clearAll();                                                        /** clears everything*/
+    void fillLines();                                                       /** sets all the inner lines*/
+    void deleteLine(unsigned row, unsigned col, char dir);                  /** clears the wall of a box in the given direction*/
+    void buildLine(ushort row, ushort col, char dir);                       /** build a wall of a box in the given direction*/
+    void printMatrix();                                                     /** prints the full Matrix*/
+    void showMaze(uint8_t & col, uint8_t & row, char & dir,
+                Matrix<char> & maze);                                       /** sets the sign of the direction prints the maze and deletes the sign*/
 
-    /**reset to default*/
-    void reset(unsigned row, unsigned col);
-    void reset();
+    /**game functions*/
+    void randomRoom();                                                      /** creates random rooms */
+    void randomMaze();                                                      /** creates a random maze */
+    void randomSeedPath(vector<vector<uint16_t> > & buf);                    /** creates a random single path*/
+    Point farthestPoint();                                                  /** determines the longest path and sets an 'x' at the endpoint*/
+    void pov(uint8_t & col, uint8_t & row, Matrix<char> & maze);              /** shows only the visible walls */
+
 
     /**miscellaneous*/
     char createRandomDir();
@@ -86,17 +95,21 @@ public:
     char createRandomDir(const char & notDir1, const char & notDir2);
     char createRandomDir(const char & notDir1, const char & notDir2, const char & notDir3);
     char createRandomPathDir(const ushort & row, const ushort & col, const ushort & maxRow, const ushort & maxCol, const char & cLastdir);
+    uint16_t getRandom(uint16_t nMin, uint16_t nMax);
+    vector<nPair> difficultyNumbers(ushort nMinProduct, ushort nMaxProduct);
+
+    /**check functions*/
     bool checkWall(ushort row, ushort col, char dir);
     bool checkOuterWall(ushort row, ushort col, char dir);
-    bool checkNextField(ushort row, ushort col, const vector<vector<ushort> > & buf);
-    ushort getRandom(ushort nMin, ushort nMax);
-    vector<nPair> difficultyNumbers(ushort nMinProduct, ushort nMaxProduct);
+    bool checkNextField(uint16_t row, uint16_t col, const vector<vector<uint16_t> > & buf);
 
 
     /**converter*/
-    ushort cDir(char dir, bool cood);
+    ushort cDir(char & dir, bool col);
     char IntChar(ushort dir) {char xdir; dir==0 ? xdir = 'w' : (dir == 1 ? xdir = 'd': (dir== 2 ? xdir = 's': xdir='a')); return xdir;}
     ushort CharInt(char xdir) {ushort dir; xdir=='w' ? dir =0  : (xdir == 'd' ? dir = 1: (xdir== 's' ? dir = 2: dir=3)); return dir;}
+    uint8_t posRow(uint8_t row) { return _rows - ((row-1)*2 + 2); }
+    uint8_t posCol(uint8_t col) { return (col -1)*4 + 2; }
 
     /**overloaded out */
     friend ostream & operator<<(ostream & os, Matrix & c1)

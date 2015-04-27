@@ -6,46 +6,79 @@
 
 using namespace std;
 
+/**TODO*/
+
+/** fix rare exception
+    improve pov to see all the neccessary walls
+    implement enemies
+    implement dig for treasure
+    durability of items
+    larger empty map
+    fix/improve random Room
+    implement size dependend length of the random paths*/
+
+
 int main()
 {
+    /**DEBUGMODE*/
 
-    /**setup your creature*/
-
-    narate(welcome,8);
-    narate(proceed,0.01); c = getch(); system("clear");
-    narate(enterName,2);
-    cin >> sName; system("clear");
-    Creature creature(sName, Point(1,1), Inventory());
-    creature.createInventory();
-
-
-    /**setup the labyrinth*/
-
-    narate(enterDifficulty(),2) ;
-    nDifficulty = tellDifficulty();
-    Matrix<char> maze(nDifficulty); maze.randomMaze();
-    Matrix<char> emptyMaze(nDifficulty); emptyMaze.clearLines();
-//    Matrix<char> mapMaze(nDifficulty);
-    Point farthest = maze.farthestPoint(); ushort winx = farthest.x(), winy = farthest.y();
-    emptyMaze.set(winx,winy,'x');
+    Creature creature("Micha", Point(1,1), Inventory()); creature.createInventory();
+    Matrix<char> maze(10,10); maze.randomMaze();
+    Matrix<char> emptyMaze(5,5,true);
+    Point farthest = maze.farthestPoint(); uint8_t winx = farthest.x(), winy = farthest.y();
+    cout << maze; c=getcha();
     string dir("00");
-    narate(intro,3); c = getch();
-    narate(goOn,3);
-    startGame(); system("clear");
-    narate(inventory,3);
-    creature.printInventory(); c = getch(); system("clear");
+
+    /**GAMEMODE*/
+
+//    /**setup your creature*/
+//
+//    narate(welcome,8);
+//    narate(proceed,0.01); c = getcha(); system("clear");
+//    narate(enterName,2);
+//    cin >> sName; system("clear");
+//    Creature creature(sName, Point(1,1), Inventory());
+//    creature.createInventory();
+//
+//
+//    /**setup the labyrinth*/
+//
+//    narate(enterDifficulty(),2) ;
+//    nDifficulty = tellDifficulty();
+//    Matrix<char> maze(nDifficulty); maze.randomMaze();
+//    Matrix<char> emptyMaze(nDifficulty); emptyMaze.clearLines();
+////    Matrix<char> mapMaze(nDifficulty);
+//    Point farthest = maze.farthestPoint(); ushort winx = farthest.x(), winy = farthest.y();
+//    emptyMaze.set(winx,winy,'x');
+//    string dir("00");
+//    narate(intro,3); c = getcha();
+//    narate(goOn,3);
+//    startGame(); system("clear");
+//    narate(inventory,3);
+//    creature.printInventory(); c = getcha(); system("clear");
+//    narate(help,3);c = getcha(); system("clear");
+
+    /**GAMECODE*/
+
+
+    bool jump(false);
 
     while (true)
     {
-        ushort x = creature.x();
-        ushort y = creature.y();
+        uint8_t x = creature.x();
+        uint8_t y = creature.y();
+
+        /**visualization of the maze*/
+        if (!jump) {
+            system("clear");
+            emptyMaze.showMaze(x,y,dir[1],maze);
+        }
+        jump = false;
+
+        /**goal*/
         if (x==winx && y==winy) {cout << "YOU FOUND THE TREASURE!! CONGRATULATIONS!!!\n\n"; break;}
 
-        emptyMaze.set(x,y,dir[1]);
-        cout << emptyMaze << endl;
-        emptyMaze.reset(x,y);
-jump:
-        dir[0] = getch();
+        dir[0] = getcha();
 
         /** create the symbol at the pos of your creature*/
         maze.set(x,y,dir[1]);
@@ -55,23 +88,43 @@ jump:
                                 { creature.moveTo(x,y,dir[0],maze); dir[1]=dir[0];  }
 
         /**action commands*/
-        else if (dir[0] == 'h') { creature.printHelp();                goto jump;   }
-        else if (dir[0] == 'p') { creature.position();                 goto jump;   }
-        else if (dir[0] == 'm') { creature.lookMap(maze,emptyMaze);    goto jump;   }
-        else if (dir[0] == 'b') { creature.breakWall(maze,x,y,dir[1]); goto jump;   }
-        else if (dir[0] == 'i') { creature.printInventory();           goto jump;   }
+        else if (dir[0] == 'h') { creature.printHelp();                                     jump = true;   }
+        else if (dir[0] == 'p') { creature.position();                                      jump = true;   }
+        else if (dir[0] == 'm') { creature.lookMap(maze, emptyMaze, x,y, dir[1]);           jump = true;   }
+        else if (dir[0] == 'b') { creature.breakWall(emptyMaze, maze,x,y,dir[1]);           jump = true;   }
+        else if (dir[0] == 'i') { creature.printInventory();                                jump = true;   }
+        else if (dir[0] == 't') { creature.locateTreasure(farthest, x, y);                  jump = true;   }
 
-        /**quit programm*/
+        /**quit program*/
         else if (dir[0] == '-') {narate(bye,8); exit(2);}
 
         /**if no condition was satisfied*/
-        else     goto jump;
+        else     jump = true;
+
 
         /** delete the symbol at the pos of your creature*/
         maze.reset(x,y);
-        system("clear");
 
     }
+
+//Matrix<char> maze(9,9);
+//maze.randomMaze();
+//maze.set(5,5,'x');
+//maze.printMatrix();
+//maze.clearLines();
+//maze.printMatrix();
+//Matrix<char> blub(9,9);
+//blub.clearLines();
+//ushort col = 8, row = 8;
+//blub.pov(col, row, maze);
+//
+//cout << maze << endl;
+//cout << blub << endl;
+//while (1){
+//    char dir;
+//    cin >> col >> row >> dir;
+//    cout << maze.checkWall(col, row, dir) << endl;
+//}
 
 
 

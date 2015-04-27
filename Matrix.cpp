@@ -5,14 +5,15 @@
 #include <vector>
 #include <unistd.h>
 
+
 using namespace std;
 
 
 
-/**constructor*/
+/**constructors*/
 
 template<typename T>
-void Matrix<T>::construct(ushort nRows, ushort nCols){
+void Matrix<T>::construct(uint8_t & nRows, uint8_t & nCols){
 
     nCols = 4*nCols + 1;
     nRows = 2*nRows + 1;
@@ -31,7 +32,6 @@ void Matrix<T>::construct(ushort nRows, ushort nCols){
     _cols = nCols;
 }
 
-
 template<typename T>
 Matrix<T>::Matrix(ushort difficulty) {
 
@@ -47,172 +47,34 @@ Matrix<T>::Matrix(ushort difficulty) {
     nRows = num[nPairs].first;
     nCols = num[nPairs].second;
 
-    construct(nRows, nCols);
+    construct(nRows, nCols, false);
 
 }
 
+//template<typename T>
+//Matrix<T>::Matrix(uint8_t nSize, bool bConstruct, bool bConstr){
+//
+//    uint8_t nRows = 2*nSize + 1;
+//    uint8_t nCols = 4*nSize + 1;
+//    _mat.resize(nRows);
+//    for (unsigned i(0); i<nRows; i++) {
+//        _mat[i].resize(nCols);
+//        for (unsigned j(0); j<nCols; j++) {
+//            _mat[i][j] = ' ';
+//        }
+//    }
+//    _rows = nRows;
+//    _cols = nCols;
+//}
+
 /**accessor*/
+
 template<typename T>
 T & Matrix<T>::operator()(const unsigned& row, const unsigned& col){
         return this->_mat[row][col];}
 
-/**setter/resetter functions*/
-template<typename T>
-void Matrix<T>::set(unsigned col, unsigned row, char sign){
-    col = (col -1)*4 +2;
-    row = _rows - ((row-1)*2 + 2) ;
-//    sign == 'w' ? _mat[row][col] = '^' : (sign == 'd' ? _mat[row][col] = '>' : (sign == 'a' ? _mat[row][col] = '<' : (sign == 's' ? _mat[row][col] = 'v': _mat[row][col] = '.')));
-    if      (sign == 'w') _mat[row][col] = '^';
-    else if (sign == 'd') _mat[row][col] = '>';
-    else if (sign == 's') _mat[row][col] = 'v';
-    else if (sign == 'a') _mat[row][col] = '<';
-    else if (sign == 'x') _mat[row][col] = 'x';
-    else                  _mat[row][col] = '.';
-}
-
-
-template<typename T>
-void Matrix<T>::reset(unsigned col, unsigned row){
-    col = (col -1)*4 +2;
-    row = _rows - ((row-1)*2 + 2) ;
-    _mat[row][col] = ' ';
-}
-
-template<typename T>
-void Matrix<T>::reset(){
-    for (int row(0); row < (_rows-1)/2; row++)
-        for (int col(0); col < (_cols-1)/4; col++)
-            _mat[_rows - (row*2 + 2)][col*4 +2] = ' ';
-}
-
-template<typename T>
-void Matrix<T>::clearLines(){
-
-    for (int row(0); row < _rows; row++)
-    {
-        for (int col(1); col < _cols -1; col++)
-        {
-            if ((row==0 || row==_rows-1))   _mat[row][col] = '_';
-            else                            _mat[row][col] = ' ';
-        }
-    }
-}
-
-template<typename T>
-void Matrix<T>::fillLines(){
-    for (unsigned row(0); row<_rows; row++)
-    {
-        for (unsigned col(0); col<_cols; col++)
-        {
-            if (row==0)       !(col % 4) ? _mat[row][col] = ' ' : _mat[row][col] = '_';
-            else if (row%2)   !(col % 4) ? _mat[row][col] = '|' : _mat[row][col] = ' ';
-            else              !(col % 4) ? _mat[row][col] = '|' : _mat[row][col] = '_';
-        }
-    }
-
-}
-
-template<typename T>
-void Matrix<T>::deleteLine(unsigned col, unsigned row, char dir){
-    col = (col -1)*4 +2;
-    row = _rows - ((row-1)*2 + 2);
-    if (dir == 'w')         _mat[row-1][col-1] = _mat[row-1][col] = _mat[row-1][col+1] = ' ';
-    else if (dir == 's')    _mat[row+1][col-1] = _mat[row+1][col] = _mat[row+1][col+1] = ' ';
-    else if (dir == 'a')    _mat[row][col-2] = _mat[row+1][col-2] = ' ';
-    else if (dir == 'd')    _mat[row][col+2] = _mat[row+1][col+2] = ' ';
-}
 
 /**game functions*/
-template<typename T>
-char Matrix<T>::createRandomDir(){
-    unsigned short x = rand() % 4;
-    char dir;
-    x==0 ? dir='w' : (x==1 ? dir='d' :(x==2 ? dir='s' : dir='a'));
-    return dir;
-}
-
-template<typename T>
-ushort Matrix<T>::getRandom(ushort nMin, ushort nMax){
-    ushort random = rand() % (nMax-nMin+1);
-    random += nMin;
-    return random;
-}
-
-
-template<typename T>
-char Matrix<T>::createRandomDir(const char & notDir){
-    ushort x = rand() % 3;
-    ushort sNotDir = CharInt(notDir);
-    ushort dir;
-    if (notDir=='5') dir=CharInt(createRandomDir());
-    else {
-        x==0 ? dir = (sNotDir+1)%4 : (x==1 ? dir = (sNotDir+2)%4 : dir = (sNotDir+3)%4);
-    }
-    char cDir = IntChar(dir);
-    return cDir;
-}
-
-template<typename T>
-char Matrix<T>::createRandomDir(const char & notDir1, const char & notDir2){
-    ushort x = rand() % 2;
-    ushort sNotDir1 = CharInt(notDir1), sNotDir2  = CharInt(notDir2);
-    ushort dir;
-    ushort largerDir = ((sNotDir1+1)%4==sNotDir2 ? sNotDir2 : sNotDir1);
-    if (notDir2=='5')                        {dir = CharInt(createRandomDir(notDir1));}
-    else {
-        if      (sNotDir1 == (sNotDir2+2)%4) {x==0 ? dir=(sNotDir1+1)%4 : dir=(sNotDir1+3)%4;}
-        else if (sNotDir1 == sNotDir2)       {cout << "This is not supposed to happen!\n";}
-        else                                 {x==0 ? dir=(largerDir+1)%4 : dir=(largerDir+2)%4;}
-    }
-    char xdir = IntChar(dir);
-    return xdir;
-
-}
-
-template<typename T>
-char Matrix<T>::createRandomDir(const char & notDir1, const char & notDir2, const char & notDir3){
-    ushort s1 = CharInt(notDir1), s2 = CharInt(notDir2), s3  = CharInt(notDir3);
-    ushort dir;
-    if (notDir3=='5')   {dir = CharInt(createRandomDir(notDir1,notDir2));}
-    else                dir = 6-s1-s2-s3;
-    char cdir = IntChar(dir);
-    return cdir;
-}
-
-template<typename T>
-char Matrix<T>::createRandomPathDir(const ushort & row, const ushort & col, const ushort & maxRow, const ushort & maxCol, const char & cLastdir){
-
-    char dir;
-
-    if (row == 1 && col == 1)                   dir = createRandomDir('s','a',cLastdir);
-    else if (row == 1 && col == maxCol)         dir = createRandomDir('s','d',cLastdir);
-    else if (row == maxRow && col == 1)         dir = createRandomDir('w','a',cLastdir);
-    else if (row == maxRow && col == maxCol)    dir = createRandomDir('w','d',cLastdir);//{cout << "\n"; break;}
-    else if (row == 1)                          dir = createRandomDir('s',cLastdir);
-    else if (col == 1)                          dir = createRandomDir('a',cLastdir);
-    else if (row == maxRow)                     dir = createRandomDir('w',cLastdir);
-    else if (col == maxCol)                     dir = createRandomDir('d',cLastdir);
-    else                                        dir = createRandomDir(cLastdir);
-
-    return dir;
-}
-
-template<typename T>
-vector<nPair> Matrix<T>::difficultyNumbers(ushort nMinProduct, ushort nMaxProduct){
-    vector<nPair> num;
-    ushort it(1);
-            for (ushort i(4); i<17; i++){
-                for (ushort j(5); j<17; j++){
-                    if (i*j>=nMinProduct && i*j <nMaxProduct) {
-                    num.resize(it);
-                    num[it-1].first = i; num[it-1].second = j;
-                    it++;
-                    }
-                }
-            }
-    return num;
-}
-
 
 template<typename T>
 void Matrix<T>::randomRoom(){
@@ -242,7 +104,7 @@ void Matrix<T>::randomMaze(){
 
     /**create buffer to save the events*/
     srand(time(0));
-    vector<vector<ushort> > buf;
+    vector<vector<uint16_t> > buf;
 
     /**instantiate starting pos*/
     buf.resize(1); buf[0].resize(3,1);
@@ -251,7 +113,7 @@ void Matrix<T>::randomMaze(){
     randomSeedPath(buf);
 
     ushort start, randPos;
-    for (ushort nPaths(0); nPaths < 30; nPaths++){
+    for (ushort nPaths(0); nPaths < 60; nPaths++){
 
         /**instatiate new random new starting position of old path*/
         start = buf.size();
@@ -279,32 +141,44 @@ void Matrix<T>::randomMaze(){
 }
 
 template<typename T>
-void Matrix<T>::randomSeedPath(vector<vector<ushort> > & buf){
+void Matrix<T>::randomSeedPath(vector<vector<uint16_t> > & buf){
 
     /**instantiate new starting point*/
-    ushort start = buf.size()-1;
+    uint16_t start = buf.size()-1;
 
-    ushort maxRow = (_rows-1)/2, maxCol = (_cols-1)/4;
-    ushort row, col;
+    uint16_t maxRow = (_rows-1)/2, maxCol = (_cols-1)/4;
+    uint16_t row, col;
 
     /**starting point*/
-    ushort index(start);
-
+    uint16_t index(start);
     char dir, cLastdir;
 
-    for (ushort it(0); it<70; it++){
+    uint16_t maxLength = getRandom(5,50); /**FIXME should depend on the size of the map*/
+    for (uint16_t it(0); it<maxLength; it++){
         cLastdir = IntChar((buf[index][2]+2)%4);
         row = buf[index][0]; col = buf[index][1];
 
-        if (it==0)  dir = createRandomPathDir(row, col, maxRow, maxCol, '5');      /** '5' tells the function to discard the lastDir for the seed*/
+        if (it==0)  dir = createRandomPathDir(row, col, maxRow, maxCol, '5');      /** '5' tells the function to discard the lastDir for the first seed*/
         else        dir = createRandomPathDir(row, col, maxRow, maxCol, cLastdir);
 
-        if (checkNextField(row + cDir(dir, 0), col + cDir(dir,1), buf)) continue;
+        /** break the loop if all surrounding walls are either outer walls or walls to recent fields of the path*/
+        uint16_t check(0);
+        for (uint16_t allDir(0); allDir<4; allDir++){
+            char cAllDir = IntChar(allDir);
+            bool outerWall = checkOuterWall(col, row, cAllDir);
+            bool nextField = checkNextField(row + cDir(cAllDir,false), col + cDir(cAllDir,true), buf);
+            if ( outerWall || nextField) check++;
+            else break;
+        }
+        if (check == 4) break;
+
+        it++;
+        if (checkNextField(row + cDir(dir,false), col + cDir(dir,true), buf)) continue;
 
         deleteLine(col, row, dir);
         buf.resize(index+2); buf[index+1].resize(3);
-        buf[index+1][0] = row + cDir(dir, 0);
-        buf[index+1][1] = col + cDir(dir,1);
+        buf[index+1][0] = row + cDir(dir, false);
+        buf[index+1][1] = col + cDir(dir,true);
         buf[index+1][2] = CharInt(dir);
         index++;
 
@@ -319,7 +193,7 @@ void Matrix<T>::randomSeedPath(vector<vector<ushort> > & buf){
 //            cout << endl;
 //        }
 //        reset(col, row);
-//        sleep(1);
+//        usleep(100000);
 
     }
     /**for printing the buffer*/
@@ -410,7 +284,248 @@ while (it<30) {
     return farthest;
 }
 
+template<typename T>
+void Matrix<T>::pov(uint8_t & col, uint8_t & row, Matrix<char> & maze){
+    ushort mcol = col, mrow = row, it;
+    char cDir;
+    uint8_t devRow(3), devCol(3); /** position in the center view*/
+
+        for (ushort dir2(0); dir2 < 4; dir2++){
+        it = 0;
+jump:
+            for (ushort dir1(0); dir1 < 4; dir1++){
+                cDir = IntChar(dir1);
+                if (maze.checkWall(col, row, cDir)) buildLine(devCol, devRow, cDir);
+            }
+            cDir = IntChar(dir2);
+            if (!maze.checkWall(col, row, cDir) && it<2){
+                row     += (-dir2+1)%2;
+                col     += (-dir2+2)%2;
+                devCol  += (-dir2+2)%2;
+                devRow  += (-dir2+1)%2;
+                it++;
+                goto jump;
+            }
+            else {
+                row = mrow; col = mcol;
+                devCol = devRow = 3;
+            }
+        }
+}
+
+
+/**matrix operations*/
+
+template<typename T>
+void Matrix<T>::set(unsigned col, unsigned row, char sign){
+    col = (col -1)*4 +2;
+    row = _rows - ((row-1)*2 + 2) ;
+//    sign == 'w' ? _mat[row][col] = '^' : (sign == 'd' ? _mat[row][col] = '>' : (sign == 'a' ? _mat[row][col] = '<' : (sign == 's' ? _mat[row][col] = 'v': _mat[row][col] = '.')));
+    if      (sign == 'w') _mat[row][col] = '^';
+    else if (sign == 'd') _mat[row][col] = '>';
+    else if (sign == 's') _mat[row][col] = 'v';
+    else if (sign == 'a') _mat[row][col] = '<';
+    else if (sign == 'x') _mat[row][col] = 'x';
+    else                  _mat[row][col] = '.';
+}
+
+template<typename T>
+void Matrix<T>::reset(unsigned col, unsigned row){
+    col = (col -1)*4 +2;
+    row = _rows - ((row-1)*2 + 2) ;
+    _mat[row][col] = ' ';
+}
+
+template<typename T>
+void Matrix<T>::reset(){
+    for (int row(0); row < (_rows-1)/2; row++)
+        for (int col(0); col < (_cols-1)/4; col++)
+            _mat[_rows - (row*2 + 2)][col*4 +2] = ' ';
+}
+
+template<typename T>
+void Matrix<T>::clearLines(){
+
+    for (ushort row(0); row < _rows; row++) {
+        for (ushort col(1); col < _cols -1; col++) {
+            if (col % 4 == 0)               _mat[row][col] = ' ';
+            if (row == 0 || row == _rows-1) _mat[row][col] = '_';
+            else if (row % 2 == 0)          _mat[row][col] = ' ';
+        }
+    }
+}
+
+template<typename T>
+void Matrix<T>::clearAllLines(){
+
+     for (ushort row(0); row < _rows; row++) {
+        for (ushort col(0); col < _cols; col++) {
+            if (col % 4 == 0) _mat[row][col] = ' ';
+            if (row % 2 == 0) _mat[row][col] = ' ';
+        }
+    }
+}
+
+template<typename T>
+void Matrix<T>::clearAll(){
+
+    for (ushort row(0); row < _rows; row++) {
+        for (ushort col(0); col < _cols; col++) {
+            _mat[row][col] = ' ';
+        }
+    }
+}
+
+template<typename T>
+void Matrix<T>::fillLines(){
+    for (unsigned row(0); row<_rows; row++)
+    {
+        for (unsigned col(0); col<_cols; col++)
+        {
+            if (row==0)       !(col % 4) ? _mat[row][col] = ' ' : _mat[row][col] = '_';
+            else if (row%2)   !(col % 4) ? _mat[row][col] = '|' : _mat[row][col] = ' ';
+            else              !(col % 4) ? _mat[row][col] = '|' : _mat[row][col] = '_';
+        }
+    }
+
+}
+
+template<typename T>
+void Matrix<T>::deleteLine(unsigned col, unsigned row, char dir){
+
+    col = (col -1)*4 +2; row = _rows - ((row-1)*2 + 2);
+    if (dir == 'w')         _mat[row-1][col-1] = _mat[row-1][col] = _mat[row-1][col+1] = ' ';
+    else if (dir == 's')    _mat[row+1][col-1] = _mat[row+1][col] = _mat[row+1][col+1] = ' ';
+    else if (dir == 'a')    _mat[row][col-2] = _mat[row+1][col-2] = ' ';
+    else if (dir == 'd')    _mat[row][col+2] = _mat[row+1][col+2] = ' ';
+}
+
+template<typename T>
+void Matrix<T>::buildLine(ushort col, ushort row, char dir){
+    col = (col -1)*4 +2;
+    row = _rows - ((row-1)*2 + 2);
+    if (dir == 'w')         _mat[row-1][col-1] = _mat[row-1][col] = _mat[row-1][col+1] = '_';
+    else if (dir == 's')    _mat[row+1][col-1] = _mat[row+1][col] = _mat[row+1][col+1] = '_';
+    else if (dir == 'a')    _mat[row][col-2] = _mat[row+1][col-2] = '|';
+    else if (dir == 'd')    _mat[row][col+2] = _mat[row+1][col+2] = '|';
+}
+
+template<typename T>
+void Matrix<T>::printMatrix(){
+    for (ushort i(0); i<_rows; i++)
+        {
+            cout << "\t\t\t";
+            for (ushort j(0); j<_cols; j++)
+                cout << _mat[i][j];
+            cout << "\n";
+        }
+}
+
+template<typename T>
+void Matrix<T>::showMaze(uint8_t & col, uint8_t & row, char & dir, Matrix<char> & maze){
+
+    pov(col,row,maze);
+    set(3, 3, dir);
+    cout << "\v\v\v\v";
+    printMatrix();
+    reset(3, 3);
+    clearAllLines();
+}
+
+/**miscellaneous*/
+
+template<typename T>
+char Matrix<T>::createRandomDir(){
+    unsigned short x = rand() % 4;
+    char dir;
+    x==0 ? dir='w' : (x==1 ? dir='d' :(x==2 ? dir='s' : dir='a'));
+    return dir;
+}
+
+template<typename T>
+char Matrix<T>::createRandomDir(const char & notDir){
+    ushort x = rand() % 3;
+    ushort sNotDir = CharInt(notDir);
+    ushort dir;
+    if (notDir=='5') dir=CharInt(createRandomDir());
+    else {
+        x==0 ? dir = (sNotDir+1)%4 : (x==1 ? dir = (sNotDir+2)%4 : dir = (sNotDir+3)%4);
+    }
+    char cDir = IntChar(dir);
+    return cDir;
+}
+
+template<typename T>
+char Matrix<T>::createRandomDir(const char & notDir1, const char & notDir2){
+    ushort x = rand() % 2;
+    ushort sNotDir1 = CharInt(notDir1), sNotDir2  = CharInt(notDir2);
+    ushort dir;
+    ushort largerDir = ((sNotDir1+1)%4==sNotDir2 ? sNotDir2 : sNotDir1);
+    if (notDir2=='5')                        {dir = CharInt(createRandomDir(notDir1));}
+    else {
+        if      (sNotDir1 == (sNotDir2+2)%4) {x==0 ? dir=(sNotDir1+1)%4 : dir=(sNotDir1+3)%4;}
+        else if (sNotDir1 == sNotDir2)       {cout << "This is not supposed to happen!\n";}
+        else                                 {x==0 ? dir=(largerDir+1)%4 : dir=(largerDir+2)%4;}
+    }
+    char xdir = IntChar(dir);
+    return xdir;
+
+}
+
+template<typename T>
+char Matrix<T>::createRandomDir(const char & notDir1, const char & notDir2, const char & notDir3){
+    ushort s1 = CharInt(notDir1), s2 = CharInt(notDir2), s3  = CharInt(notDir3);
+    ushort dir;
+    if (notDir3=='5')   {dir = CharInt(createRandomDir(notDir1,notDir2));}
+    else                dir = 6-s1-s2-s3;
+    char cdir = IntChar(dir);
+    return cdir;
+}
+
+template<typename T>
+char Matrix<T>::createRandomPathDir(const ushort & row, const ushort & col, const ushort & maxRow, const ushort & maxCol, const char & cLastdir) {
+
+    char dir;
+
+    if (row == 1 && col == 1)                   dir = createRandomDir('s','a',cLastdir);
+    else if (row == 1 && col == maxCol)         dir = createRandomDir('s','d',cLastdir);
+    else if (row == maxRow && col == 1)         dir = createRandomDir('w','a',cLastdir);
+    else if (row == maxRow && col == maxCol)    dir = createRandomDir('w','d',cLastdir);//{cout << "\n"; break;}
+    else if (row == 1)                          dir = createRandomDir('s',cLastdir);
+    else if (col == 1)                          dir = createRandomDir('a',cLastdir);
+    else if (row == maxRow)                     dir = createRandomDir('w',cLastdir);
+    else if (col == maxCol)                     dir = createRandomDir('d',cLastdir);
+    else                                        dir = createRandomDir(cLastdir);
+
+    return dir;
+    }
+
+template<typename T>
+uint16_t Matrix<T>::getRandom(uint16_t nMin, uint16_t nMax){
+    uint16_t random = rand() % (nMax-nMin+1);
+    random += nMin;
+    return random;
+}
+
+template<typename T>
+vector<nPair> Matrix<T>::difficultyNumbers(ushort nMinProduct, ushort nMaxProduct){
+    vector<nPair> num;
+    ushort it(1);
+            for (ushort i(4); i<17; i++){
+                for (ushort j(5); j<17; j++){
+                    if (i*j>=nMinProduct && i*j <nMaxProduct) {
+                    num.resize(it);
+                    num[it-1].first = i; num[it-1].second = j;
+                    it++;
+                    }
+                }
+            }
+    return num;
+}
+
+
 /**checker functions */
+
 template<typename T>
 bool Matrix<T>::checkWall(ushort col,ushort row, char dir){
     bool checkWall(false);
@@ -438,15 +553,15 @@ bool Matrix<T>::checkOuterWall(ushort col,ushort row, char dir){
 }
 
 template<typename T>
-bool Matrix<T>::checkNextField(ushort row, ushort col, const vector<vector<ushort> > & buf){
+bool Matrix<T>::checkNextField(uint16_t row, uint16_t col, const vector<vector<uint16_t> > & buf){
 
-bool check(false);
-for (ushort i(0); i < buf.size(); i++ )
-{
-    //cout <<"row: " << buf[i][0] << " col: " << buf[i][1] << endl;
-    if (buf[i][0] == row && buf[i][1] == col) check = true;
-}
-    return check;
+    bool check(false);
+    for (uint16_t i(0); i < buf.size(); i++ )
+    {
+        //cout <<"row: " << buf[i][0] << " col: " << buf[i][1] << endl;
+        if (buf[i][0] == row && buf[i][1] == col) check = true;
+    }
+        return check;
 }
 
 
@@ -454,20 +569,13 @@ for (ushort i(0); i < buf.size(); i++ )
 /**converters*/
 
 template<typename T>
-ushort Matrix<T>::cDir(char dir, bool cood){
+ushort Matrix<T>::cDir(char & dir, bool col){
 
-ushort num;
-if (!cood){
-    if (dir == 'w') num = 1;
-    else if (dir == 's') num = -1;
-    else num = 0;
-}
-else {
-    if (dir == 'd') num = 1;
-    else if (dir == 'a') num = -1;
-    else num = 0;
-}
-return num;
+    uint16_t num, nDir = CharInt(dir);
+    if (!col)    num = (-nDir+1)%2;
+    else        num = (-nDir+2)%2;
+
+    return num;
 }
 
 

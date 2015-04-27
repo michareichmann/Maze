@@ -9,6 +9,8 @@
 #include <sstream>
 #include <cstdlib>
 #include "Point.h"
+#include <ncurses.h>
+#include <cmath>
 
 
 /** function to narate the text*/
@@ -17,7 +19,7 @@
 inline void narate(const string &story, unsigned int speed){
     speed *=10000;
     for (ushort i(0); i<story.size();i++ ){
-        if ((story[i-1] == '.' ||story[i-1] == '!' ||story[i-1] == '?')&& i>1 ) sleep(1);
+        if ((story[i-1] == '.' ||story[i-1] == '!' ||story[i-1] == '?')&& i>1 && i<story.size()-2 ) sleep(1);
         cout << story[i];
         cout.flush();
         usleep(speed);
@@ -26,9 +28,9 @@ inline void narate(const string &story, unsigned int speed){
 }
 inline void secondsLeft(ushort seconds){
     unsigned int time = 1000000/4;
-    for (seconds; seconds<100;seconds--){
-        cout << seconds << " "; cout.flush();
-        if (seconds==0) break;
+    for (ushort i=seconds; i<100; i--){
+        cout << i << " "; cout.flush();
+        if (i==0) break;
         for (ushort i(0); i<3;i++){
             usleep(time);
             cout << "."; cout.flush();
@@ -54,7 +56,7 @@ inline void startGame(){
 
 /** function to skip pressing enter after the input*/
 
-inline char getch() {
+inline char getcha() {
         char buf = 0;
         struct termios old = {0};
         if (tcgetattr(0, &old) < 0)
@@ -118,14 +120,14 @@ inline string enterDifficulty(){
 
 inline ushort tellDifficulty(){
      while (true){
-        cDifficulty = getch();
-        if      (cDifficulty == '0') {narate("\nYou are such a scaredy cat... You chose very easy!",5); break;}
-        else if (cDifficulty == '1' ){narate("\nThat should not be too hard for you... You chose easy!",2); break;}
-        else if (cDifficulty == '2') {narate("\nWell this might be a challenge for you... You chose medium!",2); break;}
-        else if (cDifficulty == '3') {narate("\nAre you really sure that is not too hard for you... You chose hard!",2); break;}
+        cDifficulty = getcha();
+        if      (cDifficulty == '0') {narate("\nYou are such a scaredy cat! You chose very easy!",5); break;}
+        else if (cDifficulty == '1' ){narate("\nThat should not be too hard for you. You chose easy!",2); break;}
+        else if (cDifficulty == '2') {narate("\nWell this might be a challenge for you. You chose medium!",2); break;}
+        else if (cDifficulty == '3') {narate("\nAre you really sure that is not too hard for you? You chose hard!",2); break;}
         else {cout << "\033[2K\033[A\033[2K"; narate("\nYou did not enter a valid difficulty! please try again: ",2);}
     }
-    c = getch(), system("clear");
+    c = getcha(), system("clear");
     return int(cDifficulty-'0');
 }
 
@@ -135,7 +137,7 @@ static string inventory = "You begin with:\n\n";
 
 static string goOn = "You want start MAZE (y/n) ? ";
 
-static string help = "You can press 'h' at any time to show the assignment of keys";
+static string help = "You can press 'h' at any time to show the assignment of keys.";
 
 static string bye = "Good Bye and thank you for playing!";
 

@@ -19,9 +19,9 @@ private:
     Point m_Location;
     Inventory _inventory;
 
-    Creature() { }
 
 public:
+    Creature() { }
     Creature(string sName, const Point & cLocation, const Inventory & cInventory): m_sName(sName), m_Location(cLocation), _inventory(cInventory) { }
 
     /** getter function for the positon*/
@@ -44,13 +44,15 @@ public:
 
     void position() {cout << m_sName << " is at " << m_Location << endl;}
 
-    void lookMap(Matrix<char> & maze, Matrix<char> & emptyMaze);
+    void lookMap(Matrix<char> & maze, Matrix<char> & emptyMaze, uint8_t & col, uint8_t & row, char & dir);
 
-    void breakWall(Matrix<char> & maze, const ushort & col, const ushort & row, const char & dir);
+    void breakWall(Matrix<char> & emptymaze, Matrix<char> & maze, uint8_t & col, uint8_t & row, char & dir);
 
     void printInventory() { cout << _inventory << endl;}
 
     void printHelp() {system("clear"); narate(explainKeys(),0.01);}
+
+    void locateTreasure(Point & farthest, uint8_t & col, uint8_t & row);
 };
 
 
