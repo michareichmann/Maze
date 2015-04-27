@@ -1,0 +1,10 @@
+#ignore binaries, objects and codeblocks files
+bin/
+obj/
+Maze.cbp
+Maze.layout
+Maze.depend
+
+#ignore all backupfiles
+*~
+

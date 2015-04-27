@@ -9,6 +9,8 @@
 #include <sstream>
 #include <cstdlib>
 #include "Point.h"
+#include <ncurses.h>
+#include <cmath>
 
 
 /** function to narate the text*/
@@ -16,20 +18,20 @@
 
 inline void narate(const string &story, unsigned int speed){
     speed *=10000;
-    for (ushort i(0); i<story.size();i++ ){
-        if ((story[i-1] == '.' ||story[i-1] == '!' ||story[i-1] == '?')&& i>1 ) sleep(1);
+    for (uint16_t i(0); i<story.size();i++ ){
+        if ((story[i-1] == '.' ||story[i-1] == '!' ||story[i-1] == '?')&& i>1 && i<story.size()-2 ) sleep(1);
         cout << story[i];
         cout.flush();
         usleep(speed);
     }
 
 }
-inline void secondsLeft(ushort seconds){
+inline void secondsLeft(uint16_t seconds){
     unsigned int time = 1000000/4;
-    for (seconds; seconds<100;seconds--){
-        cout << seconds << " "; cout.flush();
-        if (seconds==0) break;
-        for (ushort i(0); i<3;i++){
+    for (uint16_t i=seconds; i<100; i--){
+        cout << i << " "; cout.flush();
+        if (i==0) break;
+        for (uint16_t i(0); i<3;i++){
             usleep(time);
             cout << "."; cout.flush();
         }
@@ -54,7 +56,7 @@ inline void startGame(){
 
 /** function to skip pressing enter after the input*/
 
-inline char getch() {
+inline char getcha() {
         char buf = 0;
         struct termios old = {0};
         if (tcgetattr(0, &old) < 0)
@@ -81,8 +83,6 @@ static char c;                  /**placeholder*/
 static string sName;            /**Name of the creature*/
 
 static char cDifficulty;        /**responsible for the size of the maze*/
-static ushort nDifficulty;
-
 
 static string welcome = "Greetings! Welcome to MAZE!\n\n";
 
@@ -96,9 +96,10 @@ inline string explainKeys(){
     explainKeys << "d:\t move right\n";
     explainKeys << "p:\t position\t\t";
     explainKeys << "i:\t inventory\n";
-    explainKeys << "m:\t shows the map for 3 seconds\t";
+    explainKeys << "m:\t map\t\t\t";
     explainKeys << "b:\t crush a wall\n";
-    explainKeys << "h:\t show this menu\t\t";
+    explainKeys << "h:\t menu\t\t\t";
+    explainKeys << "t:\t locate treasure\n";
     explainKeys << "-:\t end game\n\n";
     return explainKeys.str();
 }
@@ -116,26 +117,26 @@ inline string enterDifficulty(){
     return diff.str();
 }
 
-inline ushort tellDifficulty(){
+inline uint16_t tellDifficulty(){
      while (true){
-        cDifficulty = getch();
-        if      (cDifficulty == '0') {narate("\nYou are such a scaredy cat... You chose very easy!",5); break;}
-        else if (cDifficulty == '1' ){narate("\nThat should not be too hard for you... You chose easy!",2); break;}
-        else if (cDifficulty == '2') {narate("\nWell this might be a challenge for you... You chose medium!",2); break;}
-        else if (cDifficulty == '3') {narate("\nAre you really sure that is not too hard for you... You chose hard!",2); break;}
+        cDifficulty = getcha();
+        if      (cDifficulty == '0') {narate("\nYou are such a scaredy cat! You chose very easy!",5); break;}
+        else if (cDifficulty == '1' ){narate("\nThat should not be too hard for you. You chose easy!",2); break;}
+        else if (cDifficulty == '2') {narate("\nWell this might be a challenge for you. You chose medium!",2); break;}
+        else if (cDifficulty == '3') {narate("\nAre you really sure that is not too hard for you? You chose hard!",2); break;}
         else {cout << "\033[2K\033[A\033[2K"; narate("\nYou did not enter a valid difficulty! please try again: ",2);}
     }
-    c = getch(), system("clear");
+    c = getcha(), system("clear");
     return int(cDifficulty-'0');
 }
 
-static string intro = "You reached a pitch black maze and want to find the treasure hidden at the 'x'! Go on and try your luck!\n\n";
+static string intro = "You reached a pitch black maze and want to find the hidden treasure! Go on and try your luck!\n\n";
 
 static string inventory = "You begin with:\n\n";
 
 static string goOn = "You want start MAZE (y/n) ? ";
 
-static string help = "You can press 'h' at any time to show the assignment of keys";
+static string help = "You can press 'h' at any time to show the assignment of keys.";
 
 static string bye = "Good Bye and thank you for playing!";
 
