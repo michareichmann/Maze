@@ -2,14 +2,16 @@
 #define SETUP_H
 
 /** Check for Windows */
-#ifdef OS_WINDOWS
+#ifdef WINDOWS
 #include "windows.h"
+#include <conio.h>
+#define M_PI 3.141592
 #else
 #include <stdint.h>
 #include <unistd.h>
+#include <termios.h>
 #endif
 
-#include <termios.h>
 #include <iostream>
 #include <string>
 #include <stdio.h>
@@ -18,15 +20,29 @@
 #include "Point.h"
 #include <cmath>
 
+/** function to clear the scree */
+#ifdef WINDOWS
+inline void clearScreen(){system("cls");}
+#else
+inline void clearScreen(){ system("clear");}
+#endif // WINDOWS
 
 /** function to narate the text*/
 inline void narate(const string &story, unsigned int speed){
     speed *=10000;
+    uint16_t time = 1;
     for (uint16_t i(0); i<story.size();i++ ){
-        if ((story[i-1] == '.' ||story[i-1] == '!' ||story[i-1] == '?')&& i>1 && i<story.size()-2 ) sleep(1);
+#ifdef WINDOWS
+        if ((story[i-1] == '.' ||story[i-1] == '!' ||story[i-1] == '?')&& i>1 && i<story.size()-2 ) Sleep(1000*time);
+        cout << story[i];
+        cout.flush();
+        Sleep(speed/1000);
+#else
+        if ((story[i-1] == '.' ||story[i-1] == '!' ||story[i-1] == '?')&& i>1 && i<story.size()-2 ) sleep(time);
         cout << story[i];
         cout.flush();
         usleep(speed);
+#endif // WINDOWS
     }
 
 }
@@ -37,11 +53,19 @@ inline void secondsLeft(uint16_t seconds){
         cout << i << " "; cout.flush();
         if (i==0) break;
         for (uint16_t i(0); i<3;i++){
+#ifdef WINDOWS
+            Sleep(time/1000);
+            cout << "."; cout.flush();
+        }
+        cout << " "; cout.flush();
+        Sleep(time/1000);
+#else
             usleep(time);
             cout << "."; cout.flush();
         }
         cout << " "; cout.flush();
         usleep(time);
+#endif // WINDOWS
     }
 }
 
@@ -61,7 +85,7 @@ inline void startGame(){
 
 /** function to skip pressing enter after the input*/
 
-#ifndef OS_WINDOWS
+#ifndef WINDOWS
 inline char _getch() {
         char buf = 0;
         struct termios old = {0};
@@ -133,7 +157,7 @@ inline uint16_t tellDifficulty(){
         else if (cDifficulty == '3') {narate("\nAre you really sure that is not too hard for you? You chose hard!",2); break;}
         else {cout << "\033[2K\033[A\033[2K"; narate("\nYou did not enter a valid difficulty! please try again: ",2);}
     }
-    c = _getch(), system("clear");
+    c = _getch(), clearScreen();
     return int(cDifficulty-'0');
 }
 
@@ -148,5 +172,4 @@ static string help = "You can press 'h' at any time to show the assignment of ke
 static string bye = "Good Bye and thank you for playing!";
 
 #endif // SETUP_H
-
 

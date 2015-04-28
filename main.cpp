@@ -16,7 +16,7 @@ using namespace std;
     larger empty map
     fix/improve random Room
     implement size dependend length of the random paths
-    crossplatform compile
+    define a proper function for sleep
 */
 
 
@@ -34,11 +34,11 @@ int main()
 
     /**setup your creature*/
 
-    system("clear");
+    clearScreen();
     narate(welcome,8);
-    narate(proceed,0.01); c = _getch(); system("clear");
+    narate(proceed,0.01); c = _getch(); clearScreen();
     narate(enterName,2);
-    cin >> sName; system("clear");
+    cin >> sName; clearScreen();
     Creature creature(sName, Point(1,1), Inventory());
     creature.createInventory();
 
@@ -53,10 +53,10 @@ int main()
     string dir("00");
     narate(intro,3); c = _getch();
     narate(goOn,3);
-    startGame(); system("clear");
+    startGame(); clearScreen();
     narate(inventory,3);
-    creature.printInventory(); c = _getch(); system("clear");
-    narate(help,3);c = _getch(); system("clear");
+    creature.printInventory(); c = _getch(); clearScreen();
+    narate(help,3);c = _getch(); clearScreen();
 
     /**GAMECODE*/
 
@@ -70,13 +70,13 @@ int main()
 
         /**visualization of the maze*/
         if (!jump) {
-            system("clear");
+            clearScreen();
             emptyMaze.showMaze(x,y,dir[1],maze);
         }
         jump = false;
 
         /**goal*/
-        if (x==winx && y==winy) {cout << "YOU FOUND THE TREASURE!! CONGRATULATIONS!!!\n\n"; break;}
+        if (x==winx && y==winy) {cout << "YOU FOUND THE TREASURE!! CONGRATULATIONS!!!\n\n"; c = _getch(); break;}
 
         dir[0] = _getch();
 

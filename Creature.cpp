@@ -1,5 +1,6 @@
 #include "Creature.h"
 #include "Matrix.cpp"
+#include "Setup.h"
 
 using namespace std;
 
@@ -15,11 +16,11 @@ void Creature::moveTo(const uint16_t & col, const uint16_t & row, const char & d
 
 void Creature::lookMap(Matrix<char> & maze, Matrix<char> & emptyMaze, uint16_t & col, uint16_t & row, char & dir){
 
-    system("clear");
+    clearScreen();
     if (!_inventory.count("Match")) narate("You got no matches!\n",2);
     else {
     _inventory.decrease("Match");
-    cout << maze << "\nYou lit 1 Match to look at your Map!\t"; secondsLeft(3); system("clear");
+    cout << maze << "\nYou lit 1 Match to look at your Map!\t"; secondsLeft(3); clearScreen();
     emptyMaze.showMaze(col, row, dir, maze);
     cout << "\nYour Match is out! You got " << _inventory.count("Match") << " left\n";
     }
@@ -35,7 +36,7 @@ void Creature::breakWall(Matrix<char> & emptyMaze, Matrix<char> & maze, uint16_t
         maze.deleteLine(col, row, dir);
         emptyMaze.deleteLine(3,3,dir);
         _inventory.decrease("Sledgehammer");
-        system("clear"); emptyMaze.showMaze(col, row, dir, maze);
+        clearScreen(); emptyMaze.showMaze(col, row, dir, maze);
         cout << "You crushed the wall with 1 Sledgehammer! You got " << _inventory.count("Sledgehammer") << " left\n";
         }
         else cout << "There is no Wall to break!\n";
@@ -66,7 +67,11 @@ void Creature::locateTreasure(Point & farthest, uint16_t & col, uint16_t & row){
     else if (distance>=4)    narate("You're getting closer. ",2);
     else if (distance>=2)    narate("You're close now. ",2);
     else                     narate("The treasure is in your immediate vicinity! ",2);
+#ifdef WINDOWS
+    Sleep(1000);
+#else
     sleep(1);
+#endif
 
     /** tell the direction to the treasure*/
     double angle = 180/M_PI*atan(abs(distY/distX));
@@ -77,7 +82,11 @@ void Creature::locateTreasure(Point & farthest, uint16_t & col, uint16_t & row){
     string direction[7] = {"northeastward", "northward", "northwestward", "westward", "southwestward", "southward", "southeastward"};
     if (angle < 22.5 || angle >337.5)   narate("The treasure ist east of you!\n",2);
     for (uint16_t i(0); i < 7; i++)
+#ifdef WINDOWS
+        if (angle > 22.5+45*i && angle < 67.5+i*45)  {narate("The treasure is ",2); narate(direction[i],2); cout << "!\n";Sleep(1000);}
+#else
         if (angle > 22.5+45*i && angle < 67.5+i*45)  {narate("The treasure is ",2); narate(direction[i],2); cout << "!\n";sleep(1);}
+#endif
 
     /** decrease item */
 

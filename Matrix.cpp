@@ -427,7 +427,7 @@ void Matrix<T>::showMaze(uint16_t & col, uint16_t & row, char & dir, Matrix<char
 
     pov(col,row,maze);
     set(3, 3, dir);
-    cout << "\v\v\v\v";
+    cout << "\n\n\n\n";
     printMatrix();
     reset(3, 3);
     clearAllLines();
@@ -578,7 +578,6 @@ uint16_t Matrix<T>::cDir(char & dir, bool col){
 
     return num;
 }
-
 
 
 
