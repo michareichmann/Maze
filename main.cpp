@@ -1,8 +1,8 @@
-#include "Point.h"
+
+#include "Setup.h"
 #include "Creature.h"
 #include "Inventory.h"
 #include "Matrix.cpp"
-#include "Setup.h"
 
 using namespace std;
 
@@ -36,7 +36,7 @@ int main()
 
     system("clear");
     narate(welcome,8);
-    narate(proceed,0.01); c = getcha(); system("clear");
+    narate(proceed,0.01); c = _getch(); system("clear");
     narate(enterName,2);
     cin >> sName; system("clear");
     Creature creature(sName, Point(1,1), Inventory());
@@ -51,12 +51,12 @@ int main()
     Point farthest = maze.farthestPoint();
     uint16_t winx = farthest.x(), winy = farthest.y();
     string dir("00");
-    narate(intro,3); c = getcha();
+    narate(intro,3); c = _getch();
     narate(goOn,3);
     startGame(); system("clear");
     narate(inventory,3);
-    creature.printInventory(); c = getcha(); system("clear");
-    narate(help,3);c = getcha(); system("clear");
+    creature.printInventory(); c = _getch(); system("clear");
+    narate(help,3);c = _getch(); system("clear");
 
     /**GAMECODE*/
 
@@ -78,7 +78,7 @@ int main()
         /**goal*/
         if (x==winx && y==winy) {cout << "YOU FOUND THE TREASURE!! CONGRATULATIONS!!!\n\n"; break;}
 
-        dir[0] = getcha();
+        dir[0] = _getch();
 
         /** create the symbol at the pos of your creature*/
         maze.set(x,y,dir[1]);
@@ -106,78 +106,6 @@ int main()
         maze.reset(x,y);
 
     }
-
-//Matrix<char> maze(9,9);
-//maze.randomMaze();
-//maze.set(5,5,'x');
-//maze.printMatrix();
-//maze.clearLines();
-//maze.printMatrix();
-//Matrix<char> blub(9,9);
-//blub.clearLines();
-//uint16_t col = 8, row = 8;
-//blub.pov(col, row, maze);
-//
-//cout << maze << endl;
-//cout << blub << endl;
-//while (1){
-//    char dir;
-//    cin >> col >> row >> dir;
-//    cout << maze.checkWall(col, row, dir) << endl;
-//}
-
-
-
-//Inventory Test(Items("Sledge",5));
-//Test.addItem("Candle", 3);
-//Test.addItem("boots", 1);
-//cout << Test<< endl;
-//Inventory Test1;
-//cout << Test1;
-//Test1.addItem("bla", 5);
-//cout << Test1 << endl;
-
-
-
-
-
-
-
-//num.resize(1);
-//num[0].first = 2;
-//num[0].second = 3;
-//cout << num[0].first;
-
-
-//for (int i(0); i<num.size(); i++)
-//    cout << num[i].first << " * " << num[i].second << " = " <<  num[i].first*num[i].second << endl;
-
-
-//    while (true)
-//    {
-//        maze.set(1,1,0);
-//        maze.fillLines();
-//        maze.randomMaze();
-//        maze.farthestPoint();
-//        cout << maze << endl;
-//        int row;
-//        cin >> row;
-//
-//       if (row=='0') break;
-//    }
-
-// while (true)
-//    {
-//        int dir1, dir2;
-//        cin >> dir1 >> dir2;
-//        for (int i(0); i<4; i++){
-//            cout << maze.createRandomPathDir(dir1,dir2,9,9,'5')<< "\n";
-//        }
-//        cout << endl;
-//
-//       if (dir1=='0') break;
-//    }
-
 
 
 

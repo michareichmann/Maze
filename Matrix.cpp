@@ -3,8 +3,9 @@
 #include <ctime> // for time()
 #include <sstream>
 #include <vector>
+#ifndef OS_WINDOWS
 #include <unistd.h>
-
+#endif // OS_WINDOWS
 
 using namespace std;
 

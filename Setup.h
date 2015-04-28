@@ -1,7 +1,14 @@
 #ifndef SETUP_H
 #define SETUP_H
 
+/** Check for Windows */
+#ifdef OS_WINDOWS
+#include "windows.h"
+#else
+#include <stdint.h>
 #include <unistd.h>
+#endif
+
 #include <termios.h>
 #include <iostream>
 #include <string>
@@ -9,13 +16,10 @@
 #include <sstream>
 #include <cstdlib>
 #include "Point.h"
-#include <ncurses.h>
 #include <cmath>
 
 
 /** function to narate the text*/
-
-
 inline void narate(const string &story, unsigned int speed){
     speed *=10000;
     for (uint16_t i(0); i<story.size();i++ ){
@@ -26,6 +30,7 @@ inline void narate(const string &story, unsigned int speed){
     }
 
 }
+
 inline void secondsLeft(uint16_t seconds){
     unsigned int time = 1000000/4;
     for (uint16_t i=seconds; i<100; i--){
@@ -56,7 +61,8 @@ inline void startGame(){
 
 /** function to skip pressing enter after the input*/
 
-inline char getcha() {
+#ifndef OS_WINDOWS
+inline char _getch() {
         char buf = 0;
         struct termios old = {0};
         if (tcgetattr(0, &old) < 0)
@@ -75,6 +81,7 @@ inline char getcha() {
                 perror ("tcsetattr ~ICANON");
         return (buf);
 }
+#endif
 
 /**Setup texts*/
 
@@ -119,14 +126,14 @@ inline string enterDifficulty(){
 
 inline uint16_t tellDifficulty(){
      while (true){
-        cDifficulty = getcha();
+        cDifficulty = _getch();
         if      (cDifficulty == '0') {narate("\nYou are such a scaredy cat! You chose very easy!",5); break;}
         else if (cDifficulty == '1' ){narate("\nThat should not be too hard for you. You chose easy!",2); break;}
         else if (cDifficulty == '2') {narate("\nWell this might be a challenge for you. You chose medium!",2); break;}
         else if (cDifficulty == '3') {narate("\nAre you really sure that is not too hard for you? You chose hard!",2); break;}
         else {cout << "\033[2K\033[A\033[2K"; narate("\nYou did not enter a valid difficulty! please try again: ",2);}
     }
-    c = getcha(), system("clear");
+    c = _getch(), system("clear");
     return int(cDifficulty-'0');
 }
 
