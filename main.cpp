@@ -16,6 +16,7 @@ using namespace std;
     larger empty map
     fix/improve random Room
     implement size dependend length of the random paths
+    adjust difficulty to larger maps
 */
 
 

@@ -1,2 +1,4 @@
 #sh script to compile maze
-g++ ../main.cpp ../Creature.cpp ../Matrix.cpp -o Maze.exe
+cd ../
+g++ main.cpp Creature.cpp Matrix.cpp Setup.cc -o Maze.exe
+echo "The binary was created in the folder below"
