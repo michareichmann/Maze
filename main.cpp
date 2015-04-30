@@ -16,7 +16,6 @@ using namespace std;
     larger empty map
     fix/improve random Room
     implement size dependend length of the random paths
-    define a proper function for sleep
 */
 
 
@@ -35,9 +34,9 @@ int main()
     /**setup your creature*/
 
     clearScreen();
-    narate(welcome,8);
-    narate(proceed,0.01); c = _getch(); clearScreen();
-    narate(enterName,2);
+    printLines("maze.txt");
+    narate(proceed,0.1); c = _getch(); clearScreen();
+    narate(enterName,4);
     cin >> sName; clearScreen();
     Creature creature(sName, Point(1,1), Inventory());
     creature.createInventory();
@@ -45,18 +44,18 @@ int main()
 
     /**setup the labyrinth*/
 
-    narate(enterDifficulty(),2) ;
+    narate(enterDifficulty(),5) ;
     Matrix<char> maze(tellDifficulty()); maze.randomMaze();
     Matrix<char> emptyMaze(5,5,true);
     Point farthest = maze.farthestPoint();
     uint16_t winx = farthest.x(), winy = farthest.y();
     string dir("00");
-    narate(intro,3); c = _getch();
-    narate(goOn,3);
+    narate(intro,4); c = _getch();
+    narate(goOn,4);
     startGame(); clearScreen();
-    narate(inventory,3);
+    narate(inventory,4);
     creature.printInventory(); c = _getch(); clearScreen();
-    narate(help,3);c = _getch(); clearScreen();
+    narate(help,4);c = _getch(); clearScreen();
 
     /**GAMECODE*/
 
@@ -76,7 +75,7 @@ int main()
         jump = false;
 
         /**goal*/
-        if (x==winx && y==winy) {cout << "YOU FOUND THE TREASURE!! CONGRATULATIONS!!!\n\n"; c = _getch(); break;}
+        if (x==winx && y==winy) {cout << "YOU FOUND THE TREASURE!! CONGRATULATIONS!!!\n\n"; printLines("sign.txt"); c = _getch(); break;}
 
         dir[0] = _getch();
 

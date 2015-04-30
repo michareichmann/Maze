@@ -56,22 +56,18 @@ _inventory.addItem("Shovel",3);
 void Creature::locateTreasure(Point & farthest, uint16_t & col, uint16_t & row){
 
     /**check inventory*/
-    if (!_inventory.count("Mole")) narate("You're out of Sledgehammers!\n",2);
+    if (!_inventory.count("Mole")) narate("You're out of Sledgehammers!\n",4);
 
     /** tell the distance to the treasure*/
     double x = farthest.x(), y = farthest.y();
     double distX = x-col, distY = y-row;
     double distance = sqrt(pow(distX,2)+pow(distY,2));
-    if      (distance>=10)   narate("You're very far away. ",2);
-    else if (distance>=7)    narate("You're still far away. ",2);
-    else if (distance>=4)    narate("You're getting closer. ",2);
-    else if (distance>=2)    narate("You're close now. ",2);
-    else                     narate("The treasure is in your immediate vicinity! ",2);
-#ifdef WINDOWS
-    Sleep(1000);
-#else
-    sleep(1);
-#endif
+    if      (distance>=10)   narate("You're very far away. ",4);
+    else if (distance>=7)    narate("You're still far away. ",4);
+    else if (distance>=4)    narate("You're getting closer. ",4);
+    else if (distance>=2)    narate("You're close now. ",4);
+    else                     narate("The treasure is in your immediate vicinity! ",4);
+    sleeep(1e5);
 
     /** tell the direction to the treasure*/
     double angle = 180/M_PI*atan(abs(distY/distX));
@@ -82,14 +78,9 @@ void Creature::locateTreasure(Point & farthest, uint16_t & col, uint16_t & row){
     string direction[7] = {"northeastward", "northward", "northwestward", "westward", "southwestward", "southward", "southeastward"};
     if (angle < 22.5 || angle >337.5)   narate("The treasure ist east of you!\n",2);
     for (uint16_t i(0); i < 7; i++)
-#ifdef WINDOWS
-        if (angle > 22.5+45*i && angle < 67.5+i*45)  {narate("The treasure is ",2); narate(direction[i],2); cout << "!\n";Sleep(1000);}
-#else
-        if (angle > 22.5+45*i && angle < 67.5+i*45)  {narate("The treasure is ",2); narate(direction[i],2); cout << "!\n";sleep(1);}
-#endif
+        if (angle > 22.5+45*i && angle < 67.5+i*45)  {narate("The treasure is ",4); narate(direction[i],2); cout << "!\n";sleeep(1e5);}
 
     /** decrease item */
-
-    _inventory.decrease("Mole"); narate("You just used 1 Mole. You got ",2); cout << _inventory.count("Mole"); narate(" left\n",2);
+    _inventory.decrease("Mole"); narate("You just used 1 Mole. You got ",4); cout << _inventory.count("Mole"); narate(" left\n",4);
 
 }
