@@ -55,7 +55,7 @@ _inventory.addItem("Shovel",3);
 
 void Creature::locateTreasure(Point & farthest, uint16_t & col, uint16_t & row){
 
-    /**check inventory*/
+    /** check inventory*/
     if (!_inventory.count("Mole")) narate("You're out of Sledgehammers!\n",4);
 
     /** tell the distance to the treasure*/

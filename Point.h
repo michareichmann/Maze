@@ -49,25 +49,26 @@ template <typename T> class Matrix {
 private:
     std::vector<std::vector<T> > _mat;
     Point _point;
-    unsigned _rows;
-    unsigned _cols;
+    uint16_t _size,_rows, _cols;
+    uint16_t _colSize, _rowSize;
 
 public:
     /**constructors*/
     Matrix() {};
-    void construct(uint16_t & nRows, uint16_t & nCols);
-    Matrix(uint16_t rows, uint16_t cols, bool bEmpty = false) {construct(rows, cols); if (bEmpty) clearAll();}
+    void construct(uint16_t & nRows, uint16_t & nCols, uint16_t nSize);
+    Matrix(uint16_t rows, uint16_t cols, uint16_t nSize = 1, bool bEmpty = false) {construct(rows, cols, nSize); if (bEmpty) clearAll();}
     Matrix(uint16_t difficulty);
     //Matrix(uint16_t nSize, bool bConstruct, bool bConstr);
 
     /**Access functions*/
     T & operator()(const unsigned& row, const unsigned& col);
-    unsigned rows() const {return this->_rows;}
-    unsigned cols() const {return this->_cols;}
+    uint16_t rows() const {return this->_rows;}
+    uint16_t cols() const {return this->_cols;}
+    uint16_t size() const {return this->_size;}
 
     /**matrix operations*/
-    void set(unsigned row, unsigned col, char sign);                        /** sets a specific sign into a single box*/
-    void reset(unsigned row, unsigned col);                                 /** clears a sign in a single box*/
+    void set(uint16_t row, uint16_t col, char sign);                        /** sets a specific sign into a single box*/
+    void reset(uint16_t row, uint16_t col);                                 /** clears a sign in a single box*/
     void reset();                                                           /** clears the signs of all boxes*/
     void clearLines();                                                      /** clears all the inner lines*/
     void clearAllLines();                                                   /** clears all lines */
@@ -95,6 +96,7 @@ public:
     char createRandomPathDir(const uint16_t & row, const uint16_t & col, const uint16_t & maxRow, const uint16_t & maxCol, const char & cLastdir);
     uint16_t getRandom(uint16_t nMin, uint16_t nMax);
     vector<nPair> difficultyNumbers(uint16_t nMinProduct, uint16_t nMaxProduct);
+    void manikin(uint16_t sign, uint16_t col, uint16_t row);
 
     /**check functions*/
     bool checkWall(uint16_t row, uint16_t col, char dir);
@@ -106,8 +108,8 @@ public:
     uint16_t cDir(char & dir, bool col);
     char IntChar(uint16_t dir) {char xdir; dir==0 ? xdir = 'w' : (dir == 1 ? xdir = 'd': (dir== 2 ? xdir = 's': xdir='a')); return xdir;}
     uint16_t CharInt(char xdir) {uint16_t dir; xdir=='w' ? dir =0  : (xdir == 'd' ? dir = 1: (xdir== 's' ? dir = 2: dir=3)); return dir;}
-    uint16_t posRow(uint16_t row) { return _rows - ((row-1)*2 + 2); }
-    uint16_t posCol(uint16_t col) { return (col -1)*4 + 2; }
+    uint16_t posRow(uint16_t row) { return _rows - ((row-1)*_rowSize) - 1; }
+    uint16_t posCol(uint16_t col) { return (col-1)*_colSize; }
 
     /**overloaded out */
     friend ostream & operator<<(ostream & os, Matrix & c1)

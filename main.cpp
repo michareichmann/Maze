@@ -13,10 +13,11 @@ using namespace std;
     implement enemies
     implement dig for treasure
     durability of items
-    larger empty map
     fix/improve random Room
     implement size dependend length of the random paths
     adjust difficulty to larger maps
+    make row count from 0 and not countdown
+    make sitting manikin
 */
 
 
@@ -25,8 +26,8 @@ int main()
     /**DEBUGMODE*/
 
 //    Creature creature("Micha", Point(1,1), Inventory()); creature.createInventory();
-//    Matrix<char> maze(10,10); maze.randomMaze();
-//    Matrix<char> emptyMaze(5,5,true);
+//    Matrix<char> maze(10,10); maze.randomMaze(); cout << maze;
+//    Matrix<char> emptyMaze(5,5,3,true);
 //    Point farthest = maze.farthestPoint(); uint16_t winx = farthest.x(), winy = farthest.y();
 //    string dir("00");
 
@@ -47,7 +48,7 @@ int main()
 
     narate(enterDifficulty(),5) ;
     Matrix<char> maze(tellDifficulty()); maze.randomMaze();
-    Matrix<char> emptyMaze(5,5,true);
+    Matrix<char> emptyMaze(5,5,3,true);
     Point farthest = maze.farthestPoint();
     uint16_t winx = farthest.x(), winy = farthest.y();
     string dir("00");

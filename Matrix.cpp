@@ -6,6 +6,7 @@
 #ifndef OS_WINDOWS
 #include <unistd.h>
 #endif // OS_WINDOWS
+#include "Setup.h"
 
 using namespace std;
 
@@ -14,23 +15,27 @@ using namespace std;
 /**constructors*/
 
 template<typename T>
-void Matrix<T>::construct(uint16_t & nRows, uint16_t & nCols){
+void Matrix<T>::construct(uint16_t & nRows, uint16_t & nCols, uint16_t nSize){
 
-    nCols = 4*nCols + 1;
-    nRows = 2*nRows + 1;
+    uint16_t colSize = 2*(nSize+1), rowSize = nSize+1;
+    nCols = colSize*nCols + 1;
+    nRows = rowSize*nRows + 1;
     _mat.resize(nRows);
     for (unsigned i(0); i<nRows; i++)
     {
         _mat[i].resize(nCols);
         for (unsigned j(0); j<nCols; j++)
         {
-            if (i==0)       !(j % 4) ? _mat[i][j] = ' ' : _mat[i][j] = '_';
-            else if (i%2)   !(j % 4) ? _mat[i][j] = '|' : _mat[i][j] = ' ';
-            else            !(j % 4) ? _mat[i][j] = '|' : _mat[i][j] = '_';
+            if (i==0)           !(j % colSize) ? _mat[i][j] = ' ' : _mat[i][j] = '_';
+            else if (i%rowSize) !(j % colSize) ? _mat[i][j] = '|' : _mat[i][j] = ' ';
+            else                !(j % colSize) ? _mat[i][j] = '|' : _mat[i][j] = '_';
         }
     }
-    _rows = nRows;
-    _cols = nCols;
+    _rows       = nRows;
+    _cols       = nCols;
+    _size       = nSize;
+    _colSize    = colSize;
+    _rowSize    = rowSize;
 }
 
 template<typename T>
@@ -48,25 +53,8 @@ Matrix<T>::Matrix(uint16_t difficulty) {
     nRows = num[nPairs].first;
     nCols = num[nPairs].second;
 
-    construct(nRows, nCols);
-
+    construct(nRows, nCols, 1);
 }
-
-//template<typename T>
-//Matrix<T>::Matrix(uint16_t nSize, bool bConstruct, bool bConstr){
-//
-//    uint16_t nRows = 2*nSize + 1;
-//    uint16_t nCols = 4*nSize + 1;
-//    _mat.resize(nRows);
-//    for (unsigned i(0); i<nRows; i++) {
-//        _mat[i].resize(nCols);
-//        for (unsigned j(0); j<nCols; j++) {
-//            _mat[i][j] = ' ';
-//        }
-//    }
-//    _rows = nRows;
-//    _cols = nCols;
-//}
 
 /**accessor*/
 
@@ -75,7 +63,7 @@ T & Matrix<T>::operator()(const unsigned& row, const unsigned& col){
         return this->_mat[row][col];}
 
 
-/**game functions*/
+/**GAME FUNCTIONS*/
 
 template<typename T>
 void Matrix<T>::randomRoom(){
@@ -263,7 +251,7 @@ while (it<30) {
     /**break condition*/
     if (buf.size() == it+1) break;
     it++;
-}/**end of while loop*/
+}//end of while loop*/
 
     /** find the endpoint with the longest path and print an 'x' there*/
     uint16_t x(0);
@@ -318,23 +306,32 @@ jump:
 /**matrix operations*/
 
 template<typename T>
-void Matrix<T>::set(unsigned col, unsigned row, char sign){
-    col = (col -1)*4 +2;
-    row = _rows - ((row-1)*2 + 2) ;
-//    sign == 'w' ? _mat[row][col] = '^' : (sign == 'd' ? _mat[row][col] = '>' : (sign == 'a' ? _mat[row][col] = '<' : (sign == 's' ? _mat[row][col] = 'v': _mat[row][col] = '.')));
-    if      (sign == 'w') _mat[row][col] = '^';
-    else if (sign == 'd') _mat[row][col] = '>';
-    else if (sign == 's') _mat[row][col] = 'v';
-    else if (sign == 'a') _mat[row][col] = '<';
-    else if (sign == 'x') _mat[row][col] = 'x';
-    else                  _mat[row][col] = '.';
+void Matrix<T>::set(uint16_t col, uint16_t row, char sign){
+
+    uint16_t nCol = posCol(col) + _colSize/2;
+    uint16_t nRow = posRow(row) - _rowSize/2;
+    vector<char> keys = {'w','d','s','a','x','0'}, signs = {'^','>','v','<','x','.'};
+    for (uint8_t i(0); i<keys.size(); i++){
+        if(sign == keys[i]){
+            if (_size > 2)  {manikin(i,col, row); break;}
+            else            {_mat[nRow][nCol] = signs[i]; break;}
+        }
+    }
+
+
+    //else if (_size<5)
+
+
 }
 
 template<typename T>
-void Matrix<T>::reset(unsigned col, unsigned row){
-    col = (col -1)*4 +2;
-    row = _rows - ((row-1)*2 + 2) ;
-    _mat[row][col] = ' ';
+void Matrix<T>::reset(uint16_t col, uint16_t row){
+
+    col = posCol(col)+1;// + _colSize/2;
+    row = posRow(row)-1;// - _rowSize/2;
+    for (uint16_t x(row); x>row-_rowSize+1; x--)
+        for (uint16_t y(col); y<col+_colSize-1; y++)
+            _mat[x][y] = ' ';
 }
 
 template<typename T>
@@ -361,8 +358,8 @@ void Matrix<T>::clearAllLines(){
 
      for (uint16_t row(0); row < _rows; row++) {
         for (uint16_t col(0); col < _cols; col++) {
-            if (col % 4 == 0) _mat[row][col] = ' ';
-            if (row % 2 == 0) _mat[row][col] = ' ';
+            if (col % _colSize == 0) _mat[row][col] = ' ';
+            if (row % _rowSize == 0) _mat[row][col] = ' ';
         }
     }
 }
@@ -403,23 +400,24 @@ void Matrix<T>::deleteLine(unsigned col, unsigned row, char dir){
 
 template<typename T>
 void Matrix<T>::buildLine(uint16_t col, uint16_t row, char dir){
-    col = (col -1)*4 +2;
-    row = _rows - ((row-1)*2 + 2);
-    if (dir == 'w')         _mat[row-1][col-1] = _mat[row-1][col] = _mat[row-1][col+1] = '_';
-    else if (dir == 's')    _mat[row+1][col-1] = _mat[row+1][col] = _mat[row+1][col+1] = '_';
-    else if (dir == 'a')    _mat[row][col-2] = _mat[row+1][col-2] = '|';
-    else if (dir == 'd')    _mat[row][col+2] = _mat[row+1][col+2] = '|';
+
+    col = posCol(col);
+    row = posRow(row);
+
+    if (dir == 'w')         for (uint16_t x(col+1); x < col+_colSize; x++) _mat[row-_rowSize][x] = '_';
+    else if (dir == 's')    for (uint16_t x(col+1); x < col+_colSize; x++) _mat[row][x] = '_';
+    else if (dir == 'a')    for (uint16_t y(row); y > row-_rowSize; y--) _mat[y][col] = '|';
+    else if (dir == 'd')    for (uint16_t y(row); y > row-_rowSize; y--) _mat[y][col+_colSize] = '|';
 }
 
 template<typename T>
 void Matrix<T>::printMatrix(){
-    for (uint16_t i(0); i<_rows; i++)
-        {
-            cout << "\t\t\t";
-            for (uint16_t j(0); j<_cols; j++)
-                cout << _mat[i][j];
-            cout << "\n";
-        }
+    for (uint16_t i(0); i<_rows; i++) {
+        cout << "\t";
+        for (uint16_t j(0); j<_cols; j++)
+            cout << _mat[i][j];
+        cout << "\n";
+    }
 }
 
 template<typename T>
@@ -524,6 +522,24 @@ vector<nPair> Matrix<T>::difficultyNumbers(uint16_t nMinProduct, uint16_t nMaxPr
     return num;
 }
 
+template<typename T>
+void Matrix<T>::manikin(uint16_t sign, uint16_t col, uint16_t row){
+
+    col = posCol(col);
+    row = posRow(row);
+    if (sign == 0)      {_mat[row-3][col+3] = '@';
+                        _mat[row-2][col+2] = '<';_mat[row-2][col+3] = '|';_mat[row-2][col+4] = '>';
+                        _mat[row-1][col+2] = '/';_mat[row-1][col+4] = '\\';}
+    else if (sign == 1) {_mat[row-3][col+3] = 'O';
+                        _mat[row-2][col+3] = '|';_mat[row-2][col+4] = '=';_mat[row-2][col+5] = '>';
+                        _mat[row-1][col+3] = '|';_mat[row-1][col+4] = '\\';}
+    else if (sign == 3) {_mat[row-3][col+4] = 'O';
+                        _mat[row-2][col+2] = '<';_mat[row-2][col+3] = '=';_mat[row-2][col+4] = '|';
+                        _mat[row-1][col+3] = '/';_mat[row-1][col+4] = '|';}
+    else if (sign == 2) {_mat[row-3][col+3] = 'O';
+                        _mat[row-2][col+2] = '<';_mat[row-2][col+3] = '|';_mat[row-2][col+4] = '>';
+                        _mat[row-1][col+2] = '/';_mat[row-1][col+4] = '\\';}
+}
 
 /**checker functions */
 
